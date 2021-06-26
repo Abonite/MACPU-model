@@ -1,8 +1,12 @@
 from drc import DRC
 import mem
+import output
+import interrupt
 
 MEM = []
 MEMsize = 0
+
+ITRsize = 0
 
 wireADDR = 0
 wireDATA = 0
@@ -160,7 +164,8 @@ def decode_exec(regI):
         wireADDR = regB
 
     elif regI == DRC["ITR"]:
-        regE = MEM[1024 + int(MEM[regIP + 1])]
+        regE = MEM[MEMsize + int(MEM[regIP + 1])]
+        regIP += 1
 
     elif regI == DRC["STP"]:
         regIP = MEMsize
@@ -185,9 +190,13 @@ def startcpu():
     global regI
     global MEMsize
     global MEM
+    global ITRsize
+    global wireADDR
+    global wireDATA
 
     MEM = mem.getVal("mem")
     MEMsize = mem.getVal("memsize")
+    ITRsize = interrupt.getITRsize()
 
     while True:
         if sigRST:
@@ -195,7 +204,8 @@ def startcpu():
         else:
             readAddr(regIP)
             decode_exec(regI)
+            output.setOUT(int(wireADDR), int(wireDATA))
             regIP += 1
-            if regIP > MEMsize - 1:
+            if regIP > MEMsize + ITRsize - 1:
                 mem.setMEM(MEMsize, MEM)
                 break

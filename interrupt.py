@@ -3,14 +3,17 @@
 
 import mem
 
+itrtablesize = 0
+
 
 def setITRtable():
+    global itrtablesize
     # 0x00: print
     # 0x01: get from keybord
     # 0x02: read from disk
     # 0x03: write to disk
     itr_list = [
-        0x0010, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+        0x040A, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
         0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
         # print
         # RDB
@@ -30,4 +33,12 @@ def setITRtable():
         0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
         ]
 
+    itrtablesize = len(itr_list)
+
     mem.setITR(itr_list)
+
+
+def getITRsize():
+    global itrtablesize
+
+    return itrtablesize

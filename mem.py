@@ -20,5 +20,6 @@ def getVal(key):
 
 def setITR(itrlist):
     global MEM
+    global MEMsize
 
     MEM += itrlist

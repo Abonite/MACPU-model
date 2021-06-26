@@ -1,5 +1,6 @@
 from drc import DRC
 import mem
+import interrupt
 
 
 def encodefile():
@@ -18,3 +19,4 @@ def encodefile():
 
     buffer += [0 for i in range(1024 - len(buffer))]
     mem.setMEM(1024, buffer)
+    interrupt.setITRtable()
