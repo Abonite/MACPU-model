@@ -16,3 +16,9 @@ def getVal(key):
         return MEMsize
     elif key == "mem":
         return MEM
+
+
+def setITR(itrlist):
+    global MEM
+
+    MEM += itrlist

@@ -87,6 +87,11 @@ DRC = {
     # Then need to manually trigger the jump,like use JMP
     "ITR": 0x60,
 
+    # Output the data
+    # Use value of register B as address
+    # Use value of register A as data
+    "OUT": 0x70,
+
     # Stop cpu
     "STP": 0xFF
     }

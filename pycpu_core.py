@@ -4,6 +4,9 @@ import mem
 MEM = []
 MEMsize = 0
 
+wireADDR = 0
+wireDATA = 0
+
 sigRST = 0
 
 regIP = 0
@@ -37,6 +40,8 @@ def readAddr(IP):
 
 
 def decode_exec(regI):
+    global wireADDR
+    global wireDATA
     global regA
     global regB
     global regC
@@ -149,8 +154,14 @@ def decode_exec(regI):
         regD -= 1
     elif regI == DRC["CDO"]:
         regC -= 1
+
+    elif regI == DRC["OUT"]:
+        wireDATA = regA
+        wireADDR = regB
+
     elif regI == DRC["ITR"]:
         regE = MEM[1024 + int(MEM[regIP + 1])]
+
     elif regI == DRC["STP"]:
         regIP = MEMsize
     else:
