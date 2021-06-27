@@ -39,6 +39,8 @@ DRC = {
     "MEB": 0X0D,
     # Move the value of register A into register B
     "MAB": 0X0E,
+    # Move the value of register IP into register A
+    "MIPA": 0x0F,
 
     # Add register A and B
     # The result will be storaged in register A
@@ -77,6 +79,18 @@ DRC = {
     "DDO": 0x50,
     # Register C is decremented by one
     "CDO": 0x51,
+    # Register B is decremented by one
+    "BDO": 0x52,
+    # Register A is decremented by one
+    "ADO": 0x53,
+    # Register D is self-incrising by one
+    "DSI": 0x54,
+    # Register C is self-incrising by one
+    "CSI": 0x55,
+    # Register B is self-incrising by one
+    "BSI": 0x56,
+    # Register A is self-incrising by one
+    "ASI": 0x57,
 
     # Trigger interrupt
     # Jump to the interrupt vector table looking for the jump address

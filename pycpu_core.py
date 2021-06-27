@@ -91,6 +91,8 @@ def decode_exec(regI):
         regB = regE
     elif regI == DRC["MAB"]:
         regB = regA
+    elif regI == DRC["MIPA"]:
+        regA = regIP
 
     elif regI == DRC["ADD"]:
         regA += regB
@@ -111,13 +113,13 @@ def decode_exec(regI):
             print("stack overflow")
     elif regI == DRC["POP"]:
         if regSTCKpntr - 7 >= 0:
-            regA = STCK[regSTCKpntr]
-            regB = STCK[regSTCKpntr + 1]
-            regC = STCK[regSTCKpntr + 2]
-            regD = STCK[regSTCKpntr + 3]
-            regE = STCK[regSTCKpntr + 4]
-            regI = STCK[regSTCKpntr + 5]
-            regIP = STCK[regSTCKpntr + 6]
+            regA = STCK[regSTCKpntr - 7]
+            regB = STCK[regSTCKpntr - 6]
+            regC = STCK[regSTCKpntr - 5]
+            regD = STCK[regSTCKpntr - 4]
+            regE = STCK[regSTCKpntr - 3]
+            regI = STCK[regSTCKpntr - 2]
+            regIP = STCK[regSTCKpntr - 1]
             regSTCKpntr -= 7
         else:
             print("stack empty")
@@ -154,17 +156,30 @@ def decode_exec(regI):
             regC = 0
         else:
             pass
+
     elif regI == DRC["DDO"]:
         regD -= 1
     elif regI == DRC["CDO"]:
         regC -= 1
+    elif regI == DRC["BDO"]:
+        regB -= 1
+    elif regI == DRC["ADO"]:
+        regA -= 1
+    elif regI == DRC["DSI"]:
+        regD += 1
+    elif regI == DRC["CSI"]:
+        regC += 1
+    elif regI == DRC["BSI"]:
+        regB += 1
+    elif regI == DRC["ASI"]:
+        regA += 1
 
     elif regI == DRC["OUT"]:
         wireDATA = regA
         wireADDR = regB
 
     elif regI == DRC["ITR"]:
-        regE = MEM[MEMsize + int(MEM[regIP + 1])]
+        regE = MEMsize + MEM[MEMsize + int(MEM[regIP + 1])]
         regIP += 1
 
     elif regI == DRC["STP"]:
