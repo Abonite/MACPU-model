@@ -21,8 +21,6 @@ def setVideo(addr, data):
     else:
         videoMEM[addr - 1] = data
 
-    videoMEM = [" " for i in videoMEM if i == 0]
-
     if videoCTRreg == 0x80:
         print(
             "{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}\n".format(
