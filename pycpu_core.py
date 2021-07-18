@@ -1,6 +1,5 @@
 from drc import DRC
 import mem
-import output
 import interrupt
 
 MEM = []
@@ -219,7 +218,7 @@ def startcpu():
         else:
             readAddr(regIP)
             decode_exec(regI)
-            output.setOUT(int(wireADDR), int(wireDATA))
+            # output.setOUT(int(wireADDR), int(wireDATA))
             regIP += 1
             if regIP > MEMsize + ITRsize - 1:
                 mem.setMEM(MEMsize, MEM)

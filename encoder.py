@@ -1,12 +1,12 @@
 from drc import DRC
-import mem
+import memory
 import interrupt
 
 
 def encodefile():
     buffer = []
 
-    with open("test.pcc", "r") as pcc:
+    with open("test_Fibonacci.pcc", "r") as pcc:
         for line in pcc:
             code_line = line.rstrip("\n").split(" ")
             for val in code_line:
