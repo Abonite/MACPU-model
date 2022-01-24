@@ -1,4 +1,4 @@
-from CpuException import UndefinedInstructionError
+from src.CpuException import UndefinedInstructionError
 
 
 class Executer:

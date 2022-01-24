@@ -1,4 +1,4 @@
-from CpuException import MemoryCapacityTooSmallError
+from src.CpuException import MemoryCapacityTooSmallError
 
 
 class Memory:

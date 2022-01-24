@@ -1,10 +1,13 @@
+from typing import Tuple
+
+
 class Decoder:
     def __init__(self):
         self.instruction = [0, 0, 0]
         self.counter = 0
         self.instruction_item = 1
 
-    def setValue(self, value: int):
+    def setValue(self, value: int) -> Tuple[bool, list[int, int, int]]:
         self.instruction[self.counter] = value
 
         if self.counter == 0:
