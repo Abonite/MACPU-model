@@ -1,17 +1,18 @@
 from src.ProgramCounter import PC
 from src.Decoder import Decoder
 from src.Executer import Executer
-from src.CpuException import UndefinedInstructionError
+from src.CpuException import ExitError, UndefinedInstructionError
 from typing import Tuple
 
 
 class CpuTop:
-    PC = PC()
-    DE = Decoder()
-    EX = Executer()
-
-    def __init__(self):
-        pass
+    def __init__(self, mem_size: int, ive_size=128, custom_ive_size=64):
+        self.mem_size = mem_size
+        self.ive_size = ive_size
+        self.custom_ive_size = custom_ive_size
+        self.PC = PC()
+        self.DE = Decoder()
+        self.EX = Executer(1024, 128)
 
     def getCurrentAddress(self):
         current_address = self.PC.getPointer()
@@ -30,5 +31,7 @@ class CpuTop:
             print(str(UndefinedInstructionError))
             input("print Enter key to exit...")
             exit()
+        except ExitError:
+            raise ExitError()
         else:
             return is_write_to_mem, data, address

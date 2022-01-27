@@ -15,3 +15,34 @@ class UndefinedInstructionError(Exception):
     def __str__(self):
         return """UndefinedInstuctionError: The instruction is not defined: \
 {:04X}""".format(self.instruction)
+
+
+class UndefinedRegisterError(Exception):
+    def __init__(self, register: str):
+        self.register = register
+
+    def __str__(self):
+        return """UndefinedRegisterError: The register is not defined: \
+{}""".format(self.register)
+
+
+class UndefinedOperaterError(Exception):
+    def __init__(self, operater: str):
+        self.operater = operater
+
+    def __str__(self):
+        return """UndefinedOperaterError: The operater is not defined: \
+{}""".format(self.operater)
+
+
+class StackOverflowError(Exception):
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        return "StackOverflowError: The operater caused stack over flow"
+
+
+class ExitError(Exception):
+    def __init__(self):
+        pass
