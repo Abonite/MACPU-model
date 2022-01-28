@@ -1,6 +1,8 @@
     RDA 1
+    PSHA
     RDB 1
-    RDC 10
+    PSHB
+    RDC 64
 LOOP:
     ADD
     PSHA
