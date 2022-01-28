@@ -13,7 +13,8 @@ class Decoder:
         if self.counter == 0:
             match value:
                 case 1 | 2 | 3 | 4 | 5 | 6 | 0x48 | 0x49 | 0x4A | 0x4B | \
-                        0x4C | 0x4D | 0x4E | 0x4F:
+                        0x4C | 0x4D | 0x4E | 0x4F | 0x51 | 0x52 | 0x53 | \
+                        0x54:
                     self.instruction_item = 2
                 case _:
                     self.instruction_item = 1
@@ -24,4 +25,6 @@ class Decoder:
             return False, [0, 0, 0]
         else:
             self.counter = 0
-            return True, self.instruction
+            inst = self.instruction
+            self.instruction = [0 for i in (0, 1, 2)]
+            return True, inst

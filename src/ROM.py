@@ -11,15 +11,16 @@ class Rom:
 
         self.rom = []
         self.tag_stack = []
+        self.tag_place = []
 
         for instruction in assembly:
             instruction = instruction.rstrip("\n")
             is_inst = False
             if instruction.startswith("\t") or instruction.startswith(" "):
                 instruction = instruction.lstrip("\t").lstrip(" ")
-                is_inst = False
-            else:
                 is_inst = True
+            else:
+                is_inst = False
 
             items = resplit("\s|,", instruction)
 
@@ -44,8 +45,14 @@ class Rom:
             else:
                 tag_address = len(self.rom)
                 tag = instruction.rstrip(":")
-                tag_place = self.tag_stack[self.tag_stack.index(tag) + 1]
-                self.rom[tag_place] = tag_address
+                self.tag_place.append(tag)
+                self.tag_place.append(tag_address)
+
+        for i in range(0, len(self.tag_place), 2):
+            tag = self.tag_place[i]
+            tag_address = self.tag_place[i + 1]
+            tag_place = self.tag_stack[self.tag_stack.index(tag) + 1]
+            self.rom[tag_place] = tag_address
 
     def getValue(self, address: int):
         return self.rom[address]

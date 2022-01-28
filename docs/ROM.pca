@@ -1,25 +1,12 @@
-RDA 1
-RDB 1
-ADD
-MAF
-MBA
-MFB
-ADD
-MAF
-MBA
-MFB
-ADD
-MAF
-MBA
-MFB
-ADD
-MAF
-MBA
-MFB
-ADD
-MAF
-MBA
-MFB
-PSHA
-PSHB
-STP
+    RDA 1
+    RDB 1
+    RDC 10
+LOOP:
+    ADD
+    PSHA
+    MAF
+    MBA
+    MFB
+    CDO
+    JCNZ LOOP
+    STP

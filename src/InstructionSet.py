@@ -152,16 +152,16 @@ IS = {
     # Jump to the address designated by the value in register E
     "JMP": 0x0050,
     # If the value of register C is zero
-    # Then jump to the address designated by register E
+    # Then jump to the address designated by tag
     "JCZ": 0x0051,
     # If the value of register C is not zero
-    # Then jump to the address designated by register E
+    # Then jump to the address designated by tag
     "JCNZ": 0x0052,
     # If the value of register D is zero
-    # Then jump to the address designated by register E
+    # Then jump to the address designated by tag
     "JDZ": 0x0053,
     # If the value of register D is not zero
-    # Then jump to the address designated by register E
+    # Then jump to the address designated by tag
     "JDNZ": 0x0054,
 
     # If the value of register A and B is equal

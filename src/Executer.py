@@ -350,28 +350,28 @@ class Executer:
             # Then jump to the address designated by register E
             case 0x0051:
                 if self.reg_c == 0:
-                    return "DREG", self.reg_e, "PC"
+                    return "DREG", arg1, "PC"
                 else:
                     return "NAN", 0, 0
             # If the value of register C is not zero
             # Then jump to the address designated by register E
             case 0x0052:
                 if self.reg_c != 0:
-                    return "DREG", self.reg_e, "PC"
+                    return "DREG", arg1, "PC"
                 else:
                     return "NAN", 0, 0
             # If the value of register D is zero
             # Then jump to the address designated by register E
             case 0x0053:
                 if self.reg_d == 0:
-                    return "DREG", self.reg_e, "PC"
+                    return "DREG", arg1, "PC"
                 else:
                     return "NAN", 0, 0
             # If the value of register D is not zero
             # Then jump to the address designated by register E
             case 0x0054:
                 if self.reg_d != 0:
-                    return "DREG", self.reg_e, "PC"
+                    return "DREG", arg1, "PC"
                 else:
                     return "NAN", 0, 0
 
