@@ -1,12 +1,24 @@
+    ;SET STACK
+
+    RDSS 0x00
+    RDSZ 0xC0
+    RDSP 0
+
     RDA 1
-    PSHA
+    PSHA    ;push A and B to record the first two items of the sequence
     RDB 1
     PSHB
     RDC 64
+
+    RDSS 0x10
+    RDSZ 0xC0
+    RDSP 0
 LOOP:
     ADD
     PSHA
     MAF
+    SUB
+    PSHA
     MBA
     MFB
     CDO

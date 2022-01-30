@@ -14,6 +14,12 @@ IS = {
     "RDE": 0x0005,
     # Read in F
     "RDF": 0x0006,
+    # Read in Stack start
+    "RDSS": 0x0100,
+    # Read in Stack size
+    "RDSZ": 0x0101,
+    # Read in Stack pointer
+    "RDSP": 0x0102,
 
     # Write A
     # The value in A register will be written in the address
@@ -31,6 +37,7 @@ IS = {
     # The value in D register will be written in the address
     # which designated by register E
     "EWRD": 0x000A,
+    # Write A
     # The value in A register will be written in the address
     # which designated by register F
     "FWRA": 0x000B,
@@ -132,6 +139,12 @@ IS = {
     "PSHX": 0x0046,
     # Push register Z in to the stack
     "PSHZ": 0x0047,
+    # Push register Stack Start in to the stack
+    "PSHSS":    0x0110,
+    # Push register Stack Size in to the stack
+    "PSHSZ":    0x0111,
+    # Push register Stack Pointer in to the stack
+    "PSHSP":    0x0111,
     # Pop stack in to register A
     "POPA": 0x0048,
     # Pop stack in to register B
@@ -148,6 +161,12 @@ IS = {
     "POPX": 0x004E,
     # Pop stack in to register Z
     "POPZ": 0x004F,
+    # Pop stack in to register Stack Start
+    "POPSS":    0x0120,
+    # Pop stack in to register Stack Size
+    "POPSZ":    0x0121,
+    # Pop stack in to register Stack Pointer
+    "POPSP":    0x0121,
 
     # Jump to the address designated by the value in register E
     "JMP": 0x0050,

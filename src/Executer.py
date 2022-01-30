@@ -50,6 +50,18 @@ class Executer:
             case 0x0006:
                 self.reg_f = arg1
                 return "NAN", 0, 0
+            # Read in Stack start
+            case 0x0100:
+                self.reg_stack_start = arg1
+                return "NAN", 0, 0
+            # Read in Stack size
+            case 0x0101:
+                self.reg_stack_size = arg1
+                return "NAN", 0, 0
+            # Read in Stack pointer
+            case 0x0102:
+                self.reg_stack_pointer = arg1
+                return "NAN", 0, 0
 
             # Write A
             # The value in A register will be written in the address
@@ -286,6 +298,31 @@ class Executer:
                     raise StackOverflowError()
                 else:
                     return "DMEM", self.reg_z, stack_address
+            # Push register Stack Start in to the stack
+            case 0x0110:
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
+                self.reg_stack_pointer += 1
+                if self.reg_stack_pointer > self.reg_stack_size:
+                    raise StackOverflowError()
+                else:
+                    return "DMEM", self.reg_stack_start, stack_address
+            # Push register Stack Size in to the stack
+            case 0x0111:
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
+                self.reg_stack_pointer += 1
+                if self.reg_stack_pointer > self.reg_stack_size:
+                    raise StackOverflowError()
+                else:
+                    return "DMEM", self.reg_stack_size, stack_address
+            # Push register Stack Pointer in to the stack
+            case 0x0111:
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
+                self.reg_stack_pointer += 1
+                if self.reg_stack_pointer > self.reg_stack_size:
+                    raise StackOverflowError()
+                else:
+                    return "DMEM", self.reg_stack_pointer, stack_address
+
             # Pop stack in to register A
             case 0x0048:
                 stack_address = self.reg_stack_pointer + self.reg_stack_start
@@ -342,6 +379,27 @@ class Executer:
                 if self.reg_stack_pointer < 0:
                     raise StackOverflowError()
                 return "IDREG", stack_address, "RegZ"
+            # Pop stack in to register Stack Start
+            case 0x0120:
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
+                self.reg_stack_pointer -= 1
+                if self.reg_stack_pointer < 0:
+                    raise StackOverflowError()
+                return "IDREG", stack_address, "RegSS"
+            # Pop stack in to register Stack Size
+            case 0x0121:
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
+                self.reg_stack_pointer -= 1
+                if self.reg_stack_pointer < 0:
+                    raise StackOverflowError()
+                return "IDREG", stack_address, "RegSZ"
+            # Pop stack in to register Stack Pointer
+            case 0x0121:
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
+                self.reg_stack_pointer -= 1
+                if self.reg_stack_pointer < 0:
+                    raise StackOverflowError()
+                return "IDREG", stack_address, "RegSP"
 
             # Jump to the address designated by the value in register E
             case 0x0050:

@@ -76,6 +76,15 @@ class SystemTop:
                             self.cpu.EX.reg_x = self.memory.getValue(data)
                         case "RegZ":
                             self.cpu.EX.reg_z = self.memory.getValue(data)
+                        case "RegSS":
+                            self.cpu.EX.reg_stack_start = \
+                                self.memory.getValue(data)
+                        case "RegSZ":
+                            self.cpu.EX.reg_stack_size = \
+                                self.memory.getValue(data)
+                        case "RegSp":
+                            self.cpu.EX.reg_stack_pointer = \
+                                self.memory.getValue(data)
                         case _:
                             raise UndefinedRegisterError(address)
                 elif write_to == "NAN":

@@ -15,6 +15,12 @@ class Rom:
 
         for instruction in assembly:
             instruction = instruction.rstrip("\n")
+            instruction = instruction.split(";")[0]
+            instruction = instruction.rstrip("\t").rstrip(" ")
+
+            if instruction == "":
+                continue
+
             is_inst = False
             if instruction.startswith("\t") or instruction.startswith(" "):
                 instruction = instruction.lstrip("\t").lstrip(" ")
@@ -39,7 +45,10 @@ class Rom:
                         try:
                             temp = int(item)
                         except ValueError:
-                            self.rom.append(IS[item])
+                            if item.startswith("0x"):
+                                self.rom.append(int(item, 16))
+                            else:
+                                self.rom.append(IS[item])
                         else:
                             self.rom.append(temp)
             else:
