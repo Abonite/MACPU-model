@@ -1,26 +1,50 @@
     ;SET STACK
 
-    RDSS 0x00
-    RDSZ 0xC0
+    RDSS 0x10
+    RDSZ 0x0A
     RDSP 0
+
+    RDA 0xFFFF
+    PSHA
 
     RDA 1
     PSHA    ;push A and B to record the first two items of the sequence
     RDB 1
     PSHB
-    RDC 64
+    RDC 64  ;calculate 64 + 2 = 68 items
 
-    RDSS 0x10
+    RDD 0xF0F0
+    PSHD
+
+    ;MOVE STACK
+
+    MSSD
+    MSZE
+    MSPF
+    RDSS 0x40
     RDSZ 0xC0
     RDSP 0
+    PSHD
+    PSHE
+    PSHF
+
 LOOP:
     ADD
     PSHA
-    MAF
-    SUB
-    PSHA
-    MBA
-    MFB
+    PSHB
+    POPA
+    POPB
     CDO
     JCNZ LOOP
+
+    POPF
+    POPE
+    POPD
+    MDSS
+    MESZ
+    MFSP
+
+    RDA 0xCCCC
+    PSHA
+
     STP

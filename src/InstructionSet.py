@@ -114,6 +114,18 @@ IS = {
     "MEF": 0x002B,
     # Move the value of register F into register E
     "MFE": 0x002C,
+    # Move the value of register Stack Start into register D
+    "MSSD": 0x0120,
+    # Move the value of register D into register Stack Start
+    "MDSS": 0x0121,
+    # Move the value of register Stack Size into register E
+    "MSZE": 0x0122,
+    # Move the value of register E into register Stack Size
+    "MESZ": 0x0123,
+    # Move the value of register Stack Pointer into register F
+    "MSPF": 0x0124,
+    # Move the value of register F into register Stack Pointer
+    "MFSP": 0x0125,
 
 
 
@@ -139,12 +151,6 @@ IS = {
     "PSHX": 0x0046,
     # Push register Z in to the stack
     "PSHZ": 0x0047,
-    # Push register Stack Start in to the stack
-    "PSHSS":    0x0110,
-    # Push register Stack Size in to the stack
-    "PSHSZ":    0x0111,
-    # Push register Stack Pointer in to the stack
-    "PSHSP":    0x0111,
     # Pop stack in to register A
     "POPA": 0x0048,
     # Pop stack in to register B
@@ -161,12 +167,6 @@ IS = {
     "POPX": 0x004E,
     # Pop stack in to register Z
     "POPZ": 0x004F,
-    # Pop stack in to register Stack Start
-    "POPSS":    0x0120,
-    # Pop stack in to register Stack Size
-    "POPSZ":    0x0121,
-    # Pop stack in to register Stack Pointer
-    "POPSP":    0x0121,
 
     # Jump to the address designated by the value in register E
     "JMP": 0x0050,

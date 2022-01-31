@@ -223,6 +223,30 @@ class Executer:
             case 0x002C:
                 self.reg_e = self.reg_f
                 return "NAN", 0, 0
+            # Move the value of register Stack Start into register D
+            case 0x0120:
+                self.reg_d = self.reg_stack_start
+                return "NAN", 0, 0
+            # Move the value of register D into register Stack Start
+            case 0x0121:
+                self.reg_stack_start = self.reg_d
+                return "NAN", 0, 0
+            # Move the value of register Stack Size into register E
+            case 0x0122:
+                self.reg_e = self.reg_stack_size
+                return "NAN", 0, 0
+            # Move the value of register E into register Stack Size
+            case 0x0123:
+                self.reg_stack_size = self.reg_e
+                return "NAN", 0, 0
+            # Move the value of register Stack Pointer into register F
+            case 0x0124:
+                self.reg_f = self.reg_stack_pointer
+                return "NAN", 0, 0
+            # Move the value of register F into register Stack Pointer
+            case 0x0125:
+                self.reg_stack_pointer = self.reg_f
+                return "NAN", 0, 0
 
             # Add register A and B
             # The result will be storaged in register A
@@ -298,108 +322,63 @@ class Executer:
                     raise StackOverflowError()
                 else:
                     return "DMEM", self.reg_z, stack_address
-            # Push register Stack Start in to the stack
-            case 0x0110:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
-                self.reg_stack_pointer += 1
-                if self.reg_stack_pointer > self.reg_stack_size:
-                    raise StackOverflowError()
-                else:
-                    return "DMEM", self.reg_stack_start, stack_address
-            # Push register Stack Size in to the stack
-            case 0x0111:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
-                self.reg_stack_pointer += 1
-                if self.reg_stack_pointer > self.reg_stack_size:
-                    raise StackOverflowError()
-                else:
-                    return "DMEM", self.reg_stack_size, stack_address
-            # Push register Stack Pointer in to the stack
-            case 0x0111:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
-                self.reg_stack_pointer += 1
-                if self.reg_stack_pointer > self.reg_stack_size:
-                    raise StackOverflowError()
-                else:
-                    return "DMEM", self.reg_stack_pointer, stack_address
 
             # Pop stack in to register A
             case 0x0048:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 self.reg_stack_pointer -= 1
                 if self.reg_stack_pointer < 0:
                     raise StackOverflowError()
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 return "IDREG", stack_address, "RegA"
             # Pop stack in to register B
             case 0x0049:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 self.reg_stack_pointer -= 1
                 if self.reg_stack_pointer < 0:
                     raise StackOverflowError()
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 return "IDREG", stack_address, "RegB"
             # Pop stack in to register C
             case 0x004A:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 self.reg_stack_pointer -= 1
                 if self.reg_stack_pointer < 0:
                     raise StackOverflowError()
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 return "IDREG", stack_address, "RegC"
             # Pop stack in to register D
             case 0x004B:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 self.reg_stack_pointer -= 1
                 if self.reg_stack_pointer < 0:
                     raise StackOverflowError()
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 return "IDREG", stack_address, "RegD"
             # Pop stack in to register E
             case 0x004C:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 self.reg_stack_pointer -= 1
                 if self.reg_stack_pointer < 0:
                     raise StackOverflowError()
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 return "IDREG", stack_address, "RegE"
             # Pop stack in to register F
             case 0x004D:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 self.reg_stack_pointer -= 1
                 if self.reg_stack_pointer < 0:
                     raise StackOverflowError()
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 return "IDREG", stack_address, "RegF"
             # Pop stack in to register X
             case 0x004E:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 self.reg_stack_pointer -= 1
                 if self.reg_stack_pointer < 0:
                     raise StackOverflowError()
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 return "IDREG", stack_address, "RegX"
             # Pop stack in to register Z
             case 0x004F:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 self.reg_stack_pointer -= 1
                 if self.reg_stack_pointer < 0:
                     raise StackOverflowError()
+                stack_address = self.reg_stack_pointer + self.reg_stack_start
                 return "IDREG", stack_address, "RegZ"
-            # Pop stack in to register Stack Start
-            case 0x0120:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
-                self.reg_stack_pointer -= 1
-                if self.reg_stack_pointer < 0:
-                    raise StackOverflowError()
-                return "IDREG", stack_address, "RegSS"
-            # Pop stack in to register Stack Size
-            case 0x0121:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
-                self.reg_stack_pointer -= 1
-                if self.reg_stack_pointer < 0:
-                    raise StackOverflowError()
-                return "IDREG", stack_address, "RegSZ"
-            # Pop stack in to register Stack Pointer
-            case 0x0121:
-                stack_address = self.reg_stack_pointer + self.reg_stack_start
-                self.reg_stack_pointer -= 1
-                if self.reg_stack_pointer < 0:
-                    raise StackOverflowError()
-                return "IDREG", stack_address, "RegSP"
 
             # Jump to the address designated by the value in register E
             case 0x0050:
