@@ -13,4 +13,3 @@ if __name__ == "__main__":
         clk_num -= 1
 
     system.memory.ram.printInLine()
-

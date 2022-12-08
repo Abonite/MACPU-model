@@ -18,5 +18,5 @@ class Ram:
         i = 0
         for v in range(0, int(len(self.memory)/16)):
             mem_str = [str(x) for x in self.memory[v*16:(v*16)+16]]
-            print("{:04x}: {}".format(i*16, "\t".join(mem_str)))
+            print("{:04x}: {}".format(i*16, "\t\t".join(mem_str)))
             i += 1
