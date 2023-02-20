@@ -1,5 +1,5 @@
-from src.ProgramCounter import PC
-from src.Decoder import Decoder
+from src.PC.ProgramCounter import PC
+from src.Decoder.Decoder import Decoder
 from src.Executer import Executer
 from src.CpuException import ExitError, UndefinedInstructionError
 from typing import Tuple

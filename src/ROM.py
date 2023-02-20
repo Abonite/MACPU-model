@@ -1,4 +1,4 @@
-from src.InstructionSet import IS
+from src.Decoder.InstructionSet import IS
 from os.path import sep
 from re import split as resplit
 
