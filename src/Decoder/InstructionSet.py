@@ -1,220 +1,186 @@
-IS = {
-    # Sleep - CPU will do nothing
-    "SLP": 0x0000,
-
-    # Read in A
-    "RDA": 0x0001,
-    # Read in B
-    "RDB": 0x0002,
-    # Read in C
-    "RDC": 0x0003,
-    # Read in D
-    "RDD": 0x0004,
-    # Read in E
-    "RDE": 0x0005,
-    # Read in F
-    "RDF": 0x0006,
-    # Read in Stack start
-    "RDSS": 0x0100,
-    # Read in Stack size
-    "RDSZ": 0x0101,
-    # Read in Stack pointer
-    "RDSP": 0x0102,
-
-    # Write A
-    # The value in A register will be written in the address
-    # which designated by register E
-    "EWRA": 0x0007,
-    # Write B
-    # The value in B register will be written in the address
-    # which designated by register E
-    "EWRB": 0x0008,
-    # Write C
-    # The value in C register will be written in the address
-    # which designated by register E
-    "EWRC": 0x0009,
-    # Write D
-    # The value in D register will be written in the address
-    # which designated by register E
-    "EWRD": 0x000A,
-    # Write A
-    # The value in A register will be written in the address
-    # which designated by register F
-    "FWRA": 0x000B,
-    # Write B
-    # The value in B register will be written in the address
-    # which designated by register F
-    "FWRB": 0x000C,
-    # Write C
-    # The value in C register will be written in the address
-    # which designated by register F
-    "FWRC": 0x000D,
-    # Write D
-    # The value in D register will be written in the address
-    # which designated by register F
-    "FWRD": 0x000E,
-
-    # Move the value of register A into register F
-    "MAF": 0x000F,
-    # Move the value of register F into register A
-    "MFA": 0x0010,
-    # Move the value of register A into register E
-    "MAE": 0x0011,
-    # Move the value of register E into register A
-    "MEA": 0x0012,
-    # Move the value of register A into register D
-    "MAD": 0x0013,
-    # Move the value of register D into register A
-    "MDA": 0x0014,
-    # Move the value of register A into register C
-    "MAC": 0x0015,
-    # Move the value of register C into register A
-    "MCA": 0x0016,
-    # Move the value of register A into register B
-    "MAB": 0x0017,
-    # Move the value of register B into register A
-    "MBA": 0x0018,
-    # Move the value of register B into register F
-    "MBF": 0x0019,
-    # Move the value of register F into register B
-    "MFB": 0x001A,
-    # Move the value of register B into register E
-    "MBE": 0x001B,
-    # Move the value of register E into register B
-    "MEB": 0x001C,
-    # Move the value of register B into register D
-    "MBD": 0x001D,
-    # Move the value of register D into register B
-    "MDB": 0x001E,
-    # Move the value of register B into register C
-    "MBC": 0x001F,
-    # Move the value of register C into register B
-    "MCB": 0x0020,
-    # Move the value of register C into register F
-    "MCF": 0x0021,
-    # Move the value of register F into register C
-    "MFC": 0x0022,
-    # Move the value of register C into register E
-    "MCE": 0x0023,
-    # Move the value of register E into register C
-    "MEC": 0x0024,
-    # Move the value of register C into register D
-    "MCD": 0x0025,
-    # Move the value of register D into register C
-    "MDC": 0x0026,
-    # Move the value of register D into register F
-    "MDF": 0x0027,
-    # Move the value of register F into register D
-    "MFD": 0x0028,
-    # Move the value of register D into register E
-    "MDE": 0x0029,
-    # Move the value of register E into register D
-    "MED": 0x002A,
-    # Move the value of register E into register F
-    "MEF": 0x002B,
-    # Move the value of register F into register E
-    "MFE": 0x002C,
-    # Move the value of register Stack Start into register D
-    "MSSD": 0x0120,
-    # Move the value of register D into register Stack Start
-    "MDSS": 0x0121,
-    # Move the value of register Stack Size into register E
-    "MSZE": 0x0122,
-    # Move the value of register E into register Stack Size
-    "MESZ": 0x0123,
-    # Move the value of register Stack Pointer into register F
-    "MSPF": 0x0124,
-    # Move the value of register F into register Stack Pointer
-    "MFSP": 0x0125,
+from typing import List
+from .DecoderExceptions import OperateCodeLenthError, \
+    RegisterLabelBitsCrowdedError
 
 
+class Instruction:
+    i_type = ""
+    i_name = ""
+    i_args = []
 
-    # Add register A and B
-    # The result will be storaged in register A
-    "ADD": 0x0030,
-    # Subtract register A and B
-    "SUB": 0x0031,
+    op_code = []
 
-    # Push register A in to the stack
-    "PSHA": 0x0040,
-    # Push register B in to the stack
-    "PSHB": 0x0041,
-    # Push register C in to the stack
-    "PSHC": 0x0042,
-    # Push register D in to the stack
-    "PSHD": 0x0043,
-    # Push register E in to the stack
-    "PSHE": 0x0044,
-    # Push register F in to the stack
-    "PSHF": 0x0045,
-    # Push register X in to the stack
-    "PSHX": 0x0046,
-    # Push register Z in to the stack
-    "PSHZ": 0x0047,
-    # Pop stack in to register A
-    "POPA": 0x0048,
-    # Pop stack in to register B
-    "POPB": 0x0049,
-    # Pop stack in to register C
-    "POPC": 0x004A,
-    # Pop stack in to register D
-    "POPD": 0x004B,
-    # Pop stack in to register E
-    "POPE": 0x004C,
-    # Pop stack in to register F
-    "POPF": 0x004D,
-    # Pop stack in to register X
-    "POPX": 0x004E,
-    # Pop stack in to register Z
-    "POPZ": 0x004F,
+    has_t_r = False
+    t_r_start_bit = 0
 
-    # Jump to the address designated by the value in register E
-    "JMP": 0x0050,
-    # If the value of register C is zero
-    # Then jump to the address designated by tag
-    "JCZ": 0x0051,
-    # If the value of register C is not zero
-    # Then jump to the address designated by tag
-    "JCNZ": 0x0052,
-    # If the value of register D is zero
-    # Then jump to the address designated by tag
-    "JDZ": 0x0053,
-    # If the value of register D is not zero
-    # Then jump to the address designated by tag
-    "JDNZ": 0x0054,
+    has_r_1 = False
+    r_1_start_bit = 0
 
-    # If the value of register A and B is equal
-    # Then set register C to zero
-    "AEB": 0x0060,
-    # If the value of register A and B is not equal
-    # Then set register C to zero
-    "ANEB": 0x0061,
+    has_r_2 = False
+    r_2_start_bit = 0
 
-    # Register D is decremented by one
-    "DDO": 0x0070,
-    # Register C is decremented by one
-    "CDO": 0x0071,
-    # Register B is decremented by one
-    "BDO": 0x0072,
-    # Register A is decremented by one
-    "ADO": 0x0073,
-    # Register D is self-incrising by one
-    "DSI": 0x0074,
-    # Register C is self-incrising by one
-    "CSI": 0x0075,
-    # Register B is self-incrising by one
-    "BSI": 0x0076,
-    # Register A is self-incrising by one
-    "ASI": 0x0077,
+    has_imdn = False
+    imdn_bits = []
 
-    # Trigger interrupt
-    "ITR": 0x0080,
+    __inst_lenth = 32
+    __op_code_lenth = 10
+    __op_code_start_bit = 22
+    __register_label_bit_lenth = 6
+    __unused_bit = 0
 
-    # Output the data
-    # Use value of register B as address
-    # Use value of register A as data
-    "OUT": 0x0090,
+    def __init__(
+        self,
+        instruction_type: str = "",
+        instruction_name: str = "",
+        instruction_arguments: List[str] = [],
+        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        has_target_register: bool = False,
+        target_register_start_bit: int = 0,
+        has_register_1: bool = False,
+        register_1_start_bit: int = 0,
+        has_register_2: bool = False,
+        register_2_start_bit: int = 0,
+        has_immediate_number: bool = False,
+        immediate_number: List[int] = []
+    ):
+        """The start bit of all registers indicates the lowest bit position of
+        the register label in the instruction.Bit positions in instructions
+        start at 0.
+        List of instruction: [bit32, bit31, ..., bit0]
+        """
 
-    # Stop cpu
-    "STP": 0xFFFF
-    }
+        self.i_type = instruction_type
+        self.i_name = instruction_name
+        self.i_args = instruction_arguments
+
+        self.op_code = op_code
+
+        self.has_t_r = has_target_register
+        self.t_r_start_bit = target_register_start_bit
+
+        self.has_r_1 = has_register_1
+        self.r_1_start_bit = register_1_start_bit
+
+        self.has_r_2 = has_register_2
+        self.r_2_start_bit = register_2_start_bit
+
+        self.has_imdn = has_immediate_number
+        self.imdn_bits = immediate_number
+
+        self.__checkInstrction()
+
+    def __checkInstrction(self):
+        if len(self.op_code) == self.__op_code_lenth:
+            pass
+        else:
+            raise OperateCodeLenthError(self.__op_code_lenth)
+
+        __inst = [False for _ in range(self.__inst_lenth)]
+        for i in range(self.__op_code_lenth):
+            __inst[self.__inst_lenth - i - self.__op_code_start_bit] = True
+
+        if self.has_t_r:
+            for i in range(self.__register_label_bit_lenth):
+                if __inst[self.__inst_lenth - i - self.t_r_start_bit] is True:
+                    raise RegisterLabelBitsCrowdedError("Target")
+                else:
+                    __inst[self.__inst_lenth - i - self.t_r_start_bit] = True
+
+        if self.has_r_1:
+            for i in range(self.__register_label_bit_lenth):
+                if __inst[self.__inst_lenth - i - self.r_1_start_bit] is True:
+                    raise RegisterLabelBitsCrowdedError("First")
+                else:
+                    __inst[self.__inst_lenth - i - self.r_1_start_bit] = True
+
+        if self.has_r_2:
+            for i in range(self.__register_label_bit_lenth):
+                if __inst[self.__inst_lenth - i - self.r_2_start_bit] is True:
+                    raise RegisterLabelBitsCrowdedError("Second")
+                else:
+                    __inst[self.__inst_lenth - i - self.r_2_start_bit] = True
+
+    def isItThisInstruction(self, instruction: List[int]) -> bool:
+        start_bit = self.__inst_lenth - self.__op_code_start_bit
+        inst_op_code = instruction[
+            start_bit + self.__op_code_lenth:start_bit:-1
+        ]
+        if inst_op_code == self.op_code:
+            return True
+        else:
+            return False
+
+
+class Instrucitons:
+    __LOAD8_IR = Instruction(
+        "memory",
+        "LOAD8",
+        ["imd", "reg"]
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        True,
+        16,
+        has_immediate_number=True,
+        immediate_number=[7, 6, 5, 4, 3, 2, 1, 0]
+    )
+
+    __LOAD8_RR = Instruction(
+        "memory",
+        "LOAD8",
+        ["reg", "reg"]
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        True,
+        16,
+        True,
+        11,
+        True,
+        0
+    )
+
+    __LOAD16_IR = Instruction(
+        "memory",
+        "LOAD16",
+        ["imd", "reg"]
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        True,
+        16,
+        has_immediate_number=True,
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    )
+
+    __LOAD16_RR = Instruction(
+        "memory",
+        "LOAD16",
+        ["reg", "reg"]
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        True,
+        16,
+        True,
+        11,
+        True,
+        0
+    )
+
+    __LOAD32_RR = Instruction(
+        "memory",
+        "LOAD32",
+        ["reg", "reg"]
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        True,
+        16,
+        True,
+        11,
+        True,
+        0
+    )
+
+    __STORE8 = Instruction(
+        "memory",
+        "STORE8",
+        [],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0],
+        True,
+
+    )
+
+    def __inst__(self):
+        pass
