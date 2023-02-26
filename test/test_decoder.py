@@ -1,9 +1,5 @@
 from sys import path
-
-
 path.append("E:\\Code\\python\\pycpu\\src")
-
-
 from Decoder import InstructionSet
 
 
