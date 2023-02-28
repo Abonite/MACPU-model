@@ -14,9 +14,12 @@ class Instruction:
 
     op_code = []
 
+    __source_register_bits = []
+    __target_register_bits = []
+    __immediate_number_bits = []
+
     __inst_lenth = 32
     __op_code_bits = [31, 30, 29, 28, 27, 26, 25, 24]
-    __immediate_number_bits = []
     __register_label_bit_lenth = 6
     __unused_bit = 0
 
@@ -27,12 +30,16 @@ class Instruction:
         instruction_type: str = "",
         instruction_name: str = "",
         op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        source_register_bits: List[int] = [],
+        target_register_bits: List[int] = [],
         immediate_number: List[int] = []
     ):
         self.i_type = instruction_type
         self.i_name = instruction_name
         self.op_code = op_code
         self.__immediate_number_bits = immediate_number
+        self.__source_register_bits = source_register_bits
+        self.__target_register_bits = target_register_bits
 
     def __checkOPCode(self):
         if len(self.op_code) != 10:
@@ -72,9 +79,30 @@ class Instruction:
             else:
                 raise NotThisInstructionError(self.i_name)
 
+    def __checkSourceRegister(self):
+        if len(self.__source_regerter_bits) \
+                != self.__register_label_bit_lenth:
+            raise RegisterLabelLenthError(self.__register_label_bit_lenth)
+        else:
+            for i in self.__source_register_bits:
+                if self.check_flag[self.__inst_lenth - 1 - i]:
+                    raise RegisterLabelBitsCrowdedError("source register")
+                else:
+                    self.check_flag[self.__inst_lenth - 1 - i] = True
+
+    def __checkTargetRegister(self):
+        if len(self.__target_register_bits) \
+                != self.__register_label_bit_lenth:
+            raise RegisterLabelLenthError(self.__register_label_bit_lenth)
+        else:
+            for i in self.__target_register_bits:
+                if self.check_flag[self.__inst_lenth - 1 - i]:
+                    raise RegisterLabelBitsCrowdedError("target register")
+                else:
+                    self.check_flag[self.__inst_lenth - 1 - i] = True
+
 
 class LOAD(Instruction):
-    __target_register_bits = []
     __fsource_register_bits = []
     __ssource_register_bits = []
 
@@ -92,11 +120,10 @@ class LOAD(Instruction):
             instruction_type=instruction_type,
             instruction_name=instruction_name,
             op_code=op_code,
-            immediate_number=immediate_number
+            immediate_number=immediate_number,
+            target_register_bits=target_register
         )
 
-        self.__target_register_bits = target_register
-        self.__immediate_number_bits = immediate_number
         self.__fsource_register_bits = first_source_register
         self.__ssource_register_bits = second_source_register
 
@@ -108,17 +135,6 @@ class LOAD(Instruction):
         self.__checkFirstSourceRegister()
         self.__checkSecondSourceRegister()
         self.__checkImmediateNumber()
-
-    def __checkTargetRegister(self):
-        if len(self.__target_register_bits) \
-                != self.__register_label_bit_lenth:
-            raise RegisterLabelLenthError(self.__register_label_bit_lenth)
-        else:
-            for i in self.__target_register_bits:
-                if self.check_flag[self.__inst_lenth - 1 - i]:
-                    raise RegisterLabelBitsCrowdedError("target register")
-                else:
-                    self.check_flag[self.__inst_lenth - 1 - i] = True
 
     def __checkFirstSourceRegister(self):
         if not self.__fsource_register_bits:
@@ -160,7 +176,6 @@ class LOAD(Instruction):
 
 
 class STORE(Instruction):
-    __source_regerter_bits = []
     __ftarget_register_bits = []
     __starget_register_bits = []
 
@@ -176,10 +191,10 @@ class STORE(Instruction):
         super().__init__(
             instruction_type=instruction_type,
             instruction_name=instruction_name,
-            op_code=op_code
+            op_code=op_code,
+            source_register_bits=source_register
         )
 
-        self.__source_regerter_bits = source_register
         self.__ftarget_register_bits = first_target_register
         self.__starget_register_bits = second_target_register
 
@@ -188,18 +203,8 @@ class STORE(Instruction):
     def __checkInstructionIntegrity(self):
         self.__checkOPCode()
         self.__checkSourceRegister()
+        self.__checkFirstTargetRegister()
         self.__checkSecondTargetRegister()
-
-    def __checkSourceRegister(self):
-        if len(self.__source_regerter_bits) \
-                != self.__register_label_bit_lenth:
-            raise RegisterLabelLenthError(self.__register_label_bit_lenth)
-        else:
-            for i in self.__source_regerter_bits:
-                if self.check_flag[self.__inst_lenth - 1 - i]:
-                    raise RegisterLabelBitsCrowdedError("source register")
-                else:
-                    self.check_flag[self.__inst_lenth - 1 - i] = True
 
     def __checkFirstTargetRegister(self):
         if not self.__ftarget_register_bits:
@@ -241,9 +246,6 @@ class STORE(Instruction):
 
 
 class MOVE(Instruction):
-    __source_regerter_bits = []
-    __target_register_bits = []
-
     def __init__(
         self,
         instruction_type: str = "",
@@ -255,11 +257,10 @@ class MOVE(Instruction):
         super().__init__(
             instruction_type=instruction_type,
             instruction_name=instruction_name,
-            op_code=op_code
+            op_code=op_code,
+            source_register_bits=source_register,
+            target_register_bits=target_register
         )
-
-        self.__source_regerter_bits = source_register
-        self.__target_register_bits = target_register
 
         self.__checkInstructionIntegrity()
 
@@ -268,32 +269,8 @@ class MOVE(Instruction):
         self.__checkSourceRegister()
         self.__checkTargetRegister()
 
-    def __checkSourceRegister(self):
-        if len(self.__source_regerter_bits) \
-                != self.__register_label_bit_lenth:
-            raise RegisterLabelLenthError(self.__register_label_bit_lenth)
-        else:
-            for i in self.__source_register_bits:
-                if self.check_flag[self.__inst_lenth - 1 - i]:
-                    raise RegisterLabelBitsCrowdedError("source register")
-                else:
-                    self.check_flag[self.__inst_lenth - 1 - i] = True
-
-    def __checkTargetRegister(self):
-        if len(self.__target_register_bits) \
-                != self.__register_label_bit_lenth:
-            raise RegisterLabelLenthError(self.__register_label_bit_lenth)
-        else:
-            for i in self.__target_register_bits:
-                if self.check_flag[self.__inst_lenth - 1 - i]:
-                    raise RegisterLabelBitsCrowdedError("target register")
-                else:
-                    self.check_flag[self.__inst_lenth - 1 - i] = True
-
 
 class INTEGER(Instruction):
-    __target_register_bits = []
-    __source_regerter_bits = []
     __asource_register_bits = []
 
     def __init__(
@@ -302,7 +279,7 @@ class INTEGER(Instruction):
         instruction_name: str = "",
         op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
         target_register: List[int] = [21, 20, 19, 18, 17, 16],
-        source_register: List[int] = [5, 4, 3, 2, 1, 0],
+        source_register: List[int] = [11, 10, 9, 8, 7, 6],
         another_source_register: List[int] = [],
         immediate_number: List[int] = []
     ):
@@ -310,11 +287,11 @@ class INTEGER(Instruction):
             instruction_type=instruction_type,
             instruction_name=instruction_name,
             op_code=op_code,
+            target_register_bits=target_register,
+            source_register_bits=source_register,
             immediate_number=immediate_number,
         )
 
-        self.__source_regerter_bits = source_register
-        self.__target_register_bits = target_register
         self.__asource_register_bits = another_source_register
 
         self.__checkInstructionIntegrity()
@@ -325,28 +302,6 @@ class INTEGER(Instruction):
         self.__checkTargetRegister()
         self.__checkASourceRegister()
         self.__immediate_number_bits()
-
-    def __checkSourceRegister(self):
-        if len(self.__source_regerter_bits) \
-                != self.__register_label_bit_lenth:
-            raise RegisterLabelLenthError(self.__register_label_bit_lenth)
-        else:
-            for i in self.__source_register_bits:
-                if self.check_flag[self.__inst_lenth - 1 - i]:
-                    raise RegisterLabelBitsCrowdedError("source register")
-                else:
-                    self.check_flag[self.__inst_lenth - 1 - i] = True
-
-    def __checkTargetRegister(self):
-        if len(self.__target_register_bits) \
-                != self.__register_label_bit_lenth:
-            raise RegisterLabelLenthError(self.__register_label_bit_lenth)
-        else:
-            for i in self.__target_register_bits:
-                if self.check_flag[self.__inst_lenth - 1 - i]:
-                    raise RegisterLabelBitsCrowdedError("target register")
-                else:
-                    self.check_flag[self.__inst_lenth - 1 - i] = True
 
     def __checkASourceRegister(self):
         if not self.__asource_register_bits:
@@ -362,6 +317,103 @@ class INTEGER(Instruction):
                 if self.check_flag[self.__inst_lenth - 1 - i]:
                     raise RegisterLabelBitsCrowdedError(
                         "another source register"
+                    )
+                else:
+                    self.check_flag[self.__inst_lenth - 1 - i] = True
+
+
+class BRANCH(Instruction):
+    def __init__(
+        self,
+        instruction_type: str = "",
+        instruction_name: str = "",
+        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        target_register: List[int] = [21, 20, 19, 18, 17, 16],
+        source_register: List[int] = [5, 4, 3, 2, 1, 0],
+        immediate_number: List[int] = []
+    ):
+        super().__init__(
+            instruction_type=instruction_type,
+            instruction_name=instruction_name,
+            op_code=op_code,
+            target_register_bits=target_register,
+            source_register_bits=source_register,
+            immediate_number=immediate_number,
+        )
+
+        self.__checkInstructionIntegrity()
+
+    def __checkInstructionIntegrity(self):
+        self.__checkOPCodeLenth()
+        self.__checkSourceRegister()
+        self.__checkTargetRegister()
+        self.__immediate_number_bits()
+
+
+class JUMP(Instruction):
+    __fsource_register_bits = []
+    __ssource_register_bits = []
+
+    def __init__(
+        self,
+        instruction_type: str = "",
+        instruction_name: str = "",
+        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        first_source_register: List[int] = [],
+        second_source_register: List[int] = [],
+        immediate_number: List[int] = []
+    ):
+        super().__init__(
+            instruction_type=instruction_type,
+            instruction_name=instruction_name,
+            op_code=op_code,
+            immediate_number=immediate_number
+        )
+
+        self.__fsource_register_bits = first_source_register
+        self.__ssource_register_bits = second_source_register
+
+        self.__checkInstructionIntegrity()
+
+    def __checkInstructionIntegrity(self):
+        self.__checkOPCodeLenth()
+        self.__checkFirstSourceRegister()
+        self.__checkSecondSourceRegister()
+
+    def __checkFirstSourceRegister(self):
+        if not self.__fsource_register_bits:
+            return
+        elif len(self.__fsource_register_bits) \
+                != self.__register_label_bit_lenth:
+            raise RegisterLabelLenthError(
+                self.__register_label_bit_lenth,
+                "first source registr"
+            )
+        else:
+            for i in self.__fsource_register_bits:
+                if self.check_flag[self.__inst_lenth - 1 - i]:
+                    raise RegisterLabelBitsCrowdedError(
+                        "first source register",
+                        i
+                    )
+                else:
+                    self.check_flag[self.__inst_lenth - 1 - i] = True
+
+    def __checkSecondSourceRegister(self):
+        if not self.__ssource_register_bits:
+            return
+        elif len(self.__ssource_register_bits) \
+                != self.__register_label_bit_lenth:
+            raise RegisterLabelLenthError(
+                self.__register_label_bit_lenth,
+                "second source registr"
+            )
+        else:
+            for i in self.__fsource_register_bits:
+                if self.check_flag[self.__inst_lenth - 1 - i]:
+                    raise RegisterLabelBitsCrowdedError(
+                        "second source register",
+                        i
                     )
                 else:
                     self.check_flag[self.__inst_lenth - 1 - i] = True
@@ -434,6 +486,130 @@ class instrucitons:
         "register",
         "MOVE",
         [0, 0, 0, 0, 0, 0, 1, 0, 0, 1]
+    )
+
+    __ADD_RR = INTEGER(
+        "integer",
+        "ADD",
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __ADD_IR = INTEGER(
+        "integer",
+        "ADD",
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __SUB_RR = INTEGER(
+        "integer",
+        "SUB",
+        [1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __SUB_RI = INTEGER(
+        "integer",
+        "SUB",
+        [1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __SUB_IR = INTEGER(
+        "integer",
+        "SUB",
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __BAND_RR = INTEGER(
+        "integer",
+        "BAND",
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __BAND_IR = INTEGER(
+        "integer",
+        "BAND",
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 0],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __BOR_RR = INTEGER(
+        "integer",
+        "BOR",
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 0],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __BOR_IR = INTEGER(
+        "integer",
+        "BOR",
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __BNOT_R = INTEGER(
+        "integer",
+        "BNOT",
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        source_register=[],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __BNOT_I = INTEGER(
+        "integer",
+        "BNOT",
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    )
+
+    __BXOR_RR = INTEGER(
+        "integer",
+        "BOR",
+        [1, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __BXOR_IR = INTEGER(
+        "integer",
+        "BOR",
+        [1, 0, 0, 0, 0, 0, 1, 0, 1, 1],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __RAND = INTEGER(
+        "integer",
+        "RAND",
+        [1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+    )
+
+    __ROR = INTEGER(
+        "integer",
+        "ROR",
+        [1, 0, 0, 0, 0, 0, 1, 1, 0, 1],
+    )
+
+    __RXOR = INTEGER(
+        "integer",
+        "RXOR",
+        [1, 0, 0, 0, 0, 0, 1, 1, 1, 0],
+    )
+
+    __MUL_RR = INTEGER(
+        "integer",
+        "MUL",
+        [1, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __MUL_RI = INTEGER(
+        "integer",
+        "MUL",
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
     )
 
     def __inst__(self):
