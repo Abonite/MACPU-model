@@ -272,6 +272,7 @@ class MOVE(Instruction):
 
 class INTEGER(Instruction):
     __asource_register_bits = []
+    __aimmediate_number_bits = []
 
     def __init__(
         self,
@@ -281,7 +282,8 @@ class INTEGER(Instruction):
         target_register: List[int] = [21, 20, 19, 18, 17, 16],
         source_register: List[int] = [11, 10, 9, 8, 7, 6],
         another_source_register: List[int] = [],
-        immediate_number: List[int] = []
+        immediate_number: List[int] = [],
+        another_immediate_number: List[int] = []
     ):
         super().__init__(
             instruction_type=instruction_type,
@@ -293,6 +295,7 @@ class INTEGER(Instruction):
         )
 
         self.__asource_register_bits = another_source_register
+        self.__aimmediate_number_bits = another_immediate_number
 
         self.__checkInstructionIntegrity()
 
@@ -301,7 +304,8 @@ class INTEGER(Instruction):
         self.__checkSourceRegister()
         self.__checkTargetRegister()
         self.__checkASourceRegister()
-        self.__immediate_number_bits()
+        self.__checkImmediateNumber()
+        self.__checkAImmediateNumber()
 
     def __checkASourceRegister(self):
         if not self.__asource_register_bits:
@@ -318,6 +322,16 @@ class INTEGER(Instruction):
                     raise RegisterLabelBitsCrowdedError(
                         "another source register"
                     )
+                else:
+                    self.check_flag[self.__inst_lenth - 1 - i] = True
+
+    def __checkAImmediateNumber(self):
+        if not self.__aimmediate_number_bits:
+            return
+        else:
+            for i in self.__aimmediate_number_bits:
+                if self.check_flag[self.__inst_lenth - 1 - i]:
+                    raise ImmediateNumberBitsCrowdedError(i)
                 else:
                     self.check_flag[self.__inst_lenth - 1 - i] = True
 
@@ -610,6 +624,162 @@ class instrucitons:
         "MUL",
         [1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
         immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __DIV_RR = INTEGER(
+        "integer",
+        "DIV",
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __DIV_RI = INTEGER(
+        "integer",
+        "DIV",
+        [1, 0, 0, 0, 0, 1, 0, 0, 1, 0],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __DIV_IR = INTEGER(
+        "integer",
+        "DIV",
+        [1, 0, 0, 0, 0, 1, 0, 0, 1, 1],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __LS_RR = INTEGER(
+        "integer",
+        "LS",
+        [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __LS_RI = INTEGER(
+        "integer",
+        "LS",
+        [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __LS_IR = INTEGER(
+        "integer",
+        "LS",
+        [1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __LS_II = INTEGER(
+        "integer",
+        "LS",
+        [1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6],
+        another_immediate_number=[5, 4, 3, 2, 1, 0]
+    )
+
+    __LRS_RR = INTEGER(
+        "integer",
+        "LRS",
+        [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __LRS_RI = INTEGER(
+        "integer",
+        "LRS",
+        [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __LRS_IR = INTEGER(
+        "integer",
+        "LRS",
+        [1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __LRS_II = INTEGER(
+        "integer",
+        "LRS",
+        [1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6],
+        another_immediate_number=[5, 4, 3, 2, 1, 0]
+    )
+
+    __ARS_RR = INTEGER(
+        "integer",
+        "ARS",
+        [1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __ARS_RI = INTEGER(
+        "integer",
+        "ARS",
+        [1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __ARS_IR = INTEGER(
+        "integer",
+        "ARS",
+        [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __ARS_II = INTEGER(
+        "integer",
+        "ARS",
+        [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6],
+        another_immediate_number=[5, 4, 3, 2, 1, 0]
+    )
+
+    __LCS_RR = INTEGER(
+        "integer",
+        "LCS",
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __LCS_RI = INTEGER(
+        "integer",
+        "LCS",
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __LCS_IR = INTEGER(
+        "integer",
+        "LCS",
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 5, 4, 3, 2, 1, 0]
+    )
+
+    __LCS_II = INTEGER(
+        "integer",
+        "LCS",
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6],
+        another_immediate_number=[5, 4, 3, 2, 1, 0]
+    )
+
+    __GT = BRANCH(
+        "branch",
+        "GT",
+        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+        # TODO: Add a source here
     )
 
     def __inst__(self):
