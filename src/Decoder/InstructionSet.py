@@ -337,13 +337,16 @@ class INTEGER(Instruction):
 
 
 class BRANCH(Instruction):
+    __asource_register_bits = []
+
     def __init__(
         self,
         instruction_type: str = "",
         instruction_name: str = "",
         op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
         target_register: List[int] = [21, 20, 19, 18, 17, 16],
-        source_register: List[int] = [5, 4, 3, 2, 1, 0],
+        source_register: List[int] = [11, 10, 9, 8, 7, 6],
+        another_source_register: List[int] = [],
         immediate_number: List[int] = []
     ):
         super().__init__(
@@ -355,13 +358,34 @@ class BRANCH(Instruction):
             immediate_number=immediate_number,
         )
 
+        self.__asource_register_bits = another_source_register
+
         self.__checkInstructionIntegrity()
 
     def __checkInstructionIntegrity(self):
         self.__checkOPCodeLenth()
         self.__checkSourceRegister()
         self.__checkTargetRegister()
+        self.__checkASourceRegister()
         self.__immediate_number_bits()
+
+    def __checkASourceRegister(self):
+        if not self.__asource_register_bits:
+            return
+        elif len(self.__asource_register_bits) \
+                != self.__register_label_bit_lenth:
+            raise RegisterLabelLenthError(
+                self.__register_label_bit_lenth,
+                "another source register"
+            )
+        else:
+            for i in self.__asource_register_bits:
+                if self.check_flag[self.__inst_lenth - 1 - i]:
+                    raise RegisterLabelBitsCrowdedError(
+                        "another source register"
+                    )
+                else:
+                    self.check_flag[self.__inst_lenth - 1 - i] = True
 
 
 class JUMP(Instruction):
@@ -775,11 +799,138 @@ class instrucitons:
         another_immediate_number=[5, 4, 3, 2, 1, 0]
     )
 
-    __GT = BRANCH(
+    __GT_RR = BRANCH(
         "branch",
         "GT",
-        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0]
-        # TODO: Add a source here
+        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __GT_RI = BRANCH(
+        "branch",
+        "GT",
+        [1, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6]
+    )
+
+    __EQ_RR = BRANCH(
+        "branch",
+        "EQ",
+        [1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __EQ_RI = BRANCH(
+        "branch",
+        "EQ",
+        [1, 0, 0, 1, 0, 0, 0, 0, 1, 1],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6]
+    )
+
+    __LT_RR = BRANCH(
+        "branch",
+        "LT",
+        [1, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __LT_RI = BRANCH(
+        "branch",
+        "LT",
+        [1, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6]
+    )
+
+    __GTE_RR = BRANCH(
+        "branch",
+        "GTE",
+        [1, 0, 0, 1, 0, 0, 0, 1, 1, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __GTE_RI = BRANCH(
+        "branch",
+        "GTE",
+        [1, 0, 0, 1, 0, 0, 0, 1, 1, 1],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6]
+    )
+
+    __LTE_RR = BRANCH(
+        "branch",
+        "LTE",
+        [1, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+        source_register=[11, 10, 9, 8, 7, 6],
+        another_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __LTE_RI = BRANCH(
+        "branch",
+        "LTE",
+        [1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+        source_register=[11, 10, 9, 8, 7, 6],
+        immediate_number=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6]
+    )
+
+    __JMP_I = JUMP(
+        "jump",
+        "JMP",
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        immediate_number=[21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11,
+                          10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    )
+
+    __JMP_R = JUMP(
+        "jump",
+        "JMP",
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+        first_source_register=[11, 10, 9, 8, 7, 6],
+        second_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __OJMP_I = JUMP(
+        "jump",
+        "OJMP",
+        [1, 1, 0, 0, 0, 0, 0, 0, 1, 0],
+        immediate_number=[21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11,
+                          10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    )
+
+    __OJMP_R = JUMP(
+        "jump",
+        "OJMP",
+        [1, 1, 0, 0, 0, 0, 0, 0, 1, 1],
+        first_source_register=[11, 10, 9, 8, 7, 6],
+        second_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __ZJMP_I = JUMP(
+        "jump",
+        "ZJMP",
+        [1, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+        immediate_number=[21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11,
+                          10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    )
+
+    __ZJMP_R = JUMP(
+        "jump",
+        "ZJMP",
+        [1, 1, 0, 0, 0, 0, 0, 1, 0, 1],
+        first_source_register=[11, 10, 9, 8, 7, 6],
+        second_source_register=[5, 4, 3, 2, 1, 0]
+    )
+
+    __NOP = Instruction(
+        "others",
+        "NOP",
+        [1, 1, 0, 0, 0, 0, 0, 1, 1, 0]
     )
 
     def __inst__(self):
