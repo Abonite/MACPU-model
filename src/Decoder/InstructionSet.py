@@ -8,6 +8,7 @@ from DecoderExceptions import OperateCodeLenthError, \
     InvalidBitValueError
 
 
+# TODO: Need add register check here
 class Instruction:
     i_type = ""
     i_name = ""
@@ -19,7 +20,7 @@ class Instruction:
     immediate_number_bits = []
 
     inst_lenth = 32
-    op_code_bits = [31, 30, 29, 28, 27, 26, 25, 24]
+    op_code_bits = [31, 30, 29, 28, 27, 26, 25, 24, 23, 22]
     register_label_bit_lenth = 6
     unused_bit = 0
 
@@ -64,7 +65,8 @@ class Instruction:
         else:
             if [inst[self.inst_lenth - 1 - x] for x in self.op_code_bits] \
                     == self.op_code:
-                for i, f, b in enumerate(zip(self.check_flag, inst)):
+                i = 0
+                for f, b in zip(self.check_flag, inst):
                     if f:
                         pass
                     else:
@@ -76,6 +78,7 @@ class Instruction:
                                 self.inst_lenth - 1 - i,
                                 self.unused_bit
                             )
+                    i += 1
             else:
                 raise NotThisInstructionError(self.i_name)
 
@@ -114,7 +117,7 @@ class LOAD(Instruction):
         self,
         instruction_type: str = "",
         instruction_name: str = "",
-        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         target_register: List[int] = [21, 20, 19, 18, 17, 16],
         immediate_number: List[int] = [],
         first_source_register: List[int] = [],
@@ -187,7 +190,7 @@ class STORE(Instruction):
         self,
         instruction_type: str = "",
         instruction_name: str = "",
-        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         source_register: List[int] = [21, 20, 19, 18, 17, 16],
         first_target_register: List[int] = [],
         second_target_register: List[int] = []
@@ -254,7 +257,7 @@ class MOVE(Instruction):
         self,
         instruction_type: str = "",
         instruction_name: str = "",
-        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         source_register: List[int] = [5, 4, 3, 2, 1, 0],
         target_register: List[int] = [21, 20, 19, 18, 17, 16],
     ):
@@ -282,7 +285,7 @@ class INTEGER(Instruction):
         self,
         instruction_type: str = "",
         instruction_name: str = "",
-        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         target_register: List[int] = [21, 20, 19, 18, 17, 16],
         source_register: List[int] = [],
         another_source_register: List[int] = [],
@@ -348,7 +351,7 @@ class BRANCH(Instruction):
         self,
         instruction_type: str = "",
         instruction_name: str = "",
-        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         target_register: List[int] = [21, 20, 19, 18, 17, 16],
         source_register: List[int] = [11, 10, 9, 8, 7, 6],
         another_source_register: List[int] = [],
@@ -402,7 +405,7 @@ class JUMP(Instruction):
         self,
         instruction_type: str = "",
         instruction_name: str = "",
-        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
+        op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         first_source_register: List[int] = [],
         second_source_register: List[int] = [],
         immediate_number: List[int] = []
@@ -939,7 +942,7 @@ class Instrucitons:
         [1, 1, 0, 0, 0, 0, 0, 1, 1, 0]
     )
 
-    def inst(self):
+    def __init__(self):
         pass
 
     def findInstruction(self, instruction: List[int]):
