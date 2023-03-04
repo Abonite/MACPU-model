@@ -5,10 +5,11 @@ from DecoderExceptions import OperateCodeLenthError, \
     RegisterLabelLenthError, \
     ImmediateNumberBitsCrowdedError, \
     NotThisInstructionError, \
-    InvalidBitValueError
+    InvalidBitValueError, \
+    RegisterNotBeAllowedError
 
 
-# TODO: Need add register check here
+# TODO: how to check?
 class Instruction:
     i_type = ""
     i_name = ""
@@ -18,6 +19,9 @@ class Instruction:
     source_register_bits = []
     target_register_bits = []
     immediate_number_bits = []
+
+    source_register_allowed = []
+    target_register_allowed = []
 
     inst_lenth = 32
     op_code_bits = [31, 30, 29, 28, 27, 26, 25, 24, 23, 22]
@@ -31,7 +35,9 @@ class Instruction:
         op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0],
         source_register_bits: List[int] = [],
         target_register_bits: List[int] = [],
-        immediate_number: List[int] = []
+        immediate_number: List[int] = [],
+        source_register_allowed: List[int] = [],
+        target_register_allowed: List[int] = []
     ):
         self.i_type = instruction_type
         self.i_name = instruction_name
@@ -39,6 +45,8 @@ class Instruction:
         self.immediate_number_bits = immediate_number
         self.source_register_bits = source_register_bits
         self.target_register_bits = target_register_bits
+        self.target_register_allowed = target_register_allowed
+        self.source_register_allowed = source_register_allowed
 
         self.check_flag = [False for _ in range(self.inst_lenth)]
 
@@ -94,6 +102,16 @@ class Instruction:
                     raise RegisterLabelBitsCrowdedError("source register", i)
                 else:
                     self.check_flag[self.inst_lenth - 1 - i] = True
+
+    def checkSourceRegisterIsAllowed(self, inst: List[int]):
+        if [inst[self.inst_lenth - i - 1] for i in self.source_register_bits] \
+                not in self.source_register_allowed:
+            raise RegisterNotBeAllowedError(self.i_name, "source register")
+
+    def checkTargetRegisterIsAllowed(self, inst: List[int]):
+        if [inst[self.inst_lenth - i - 1] for i in self.target_register_bits] \
+                not in self.target_register_allowed:
+            raise RegisterNotBeAllowedError(self.i_name, "target register")
 
     def checkTargetRegister(self):
         if not self.target_register_bits:

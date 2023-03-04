@@ -66,3 +66,12 @@ class InvalidBitValueError(Exception):
     def __str__(self) -> str:
         return f"""The invalid bit of the input instruction is not as expected,
 {self.i} should be {self.v} at bit {self.b}"""
+
+
+class RegisterNotBeAllowedError(Exception):
+    def __init__(self, inst: str, register: str):
+        self.inst = inst
+        self.register = register
+
+    def __str__(self) -> str:
+        return f"Register {self.register} of {self.inst} is not allowed"
