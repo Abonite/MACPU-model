@@ -20,6 +20,7 @@ ALL_GENERAL_REGISTER = [
 ]
 
 
+# TODO: How to record all registers and immediate number information
 class Instruction:
     i_type = ""
     i_name = ""
@@ -1182,4 +1183,4 @@ class Instrucitons:
                 except Exception as e:
                     raise e
                 else:
-                    return i.i_type, i.i_name
+                    return

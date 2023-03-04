@@ -75,3 +75,13 @@ class RegisterNotBeAllowedError(Exception):
 
     def __str__(self) -> str:
         return f"Register {self.register} of {self.inst} is not allowed"
+
+
+class NoInstructionError(Exception):
+    def __str__(self) -> str:
+        return "Decoder did not latch to a valid instruction"
+
+
+class IllegalInstructionError(Exception):
+    def __str__(self) -> str:
+        return "Decoder latches to all 0s instruction"
