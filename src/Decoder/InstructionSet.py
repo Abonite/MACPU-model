@@ -1,9 +1,23 @@
-from typing import List
+from typing import List, Tuple
 from DecoderExceptions import OperateCodeLenthError, \
     RegisterLabelBitsCrowdedError, InstructionLenthError, \
     RegisterLabelLenthError, ImmediateNumberBitsCrowdedError, \
     NotThisInstructionError, InvalidBitValueError, \
     RegisterNotBeAllowedError
+
+
+ALL_REGISTER = [
+    [int(y) for y in bin(x)[2:].rjust(6, "0")] for x in range(42)
+]
+ALL_NONZERO_REGISTER = [
+    [int(y) for y in bin(x)[2:].rjust(6, "0")] for x in range(1, 42)
+]
+ALL_NONPC_REGISTER = [
+    [int(y) for y in bin(x)[2:].rjust(6, "0")] for x in range(0, 41)
+]
+ALL_GENERAL_REGISTER = [
+    [int(y) for y in bin(x)[2:].rjust(6, "0")] for x in range(1, 41)
+]
 
 
 class Instruction:
@@ -144,9 +158,9 @@ class LOAD(Instruction):
         immediate_number: List[int] = [],
         first_source_register: List[int] = [],
         second_source_register: List[int] = [],
-        target_register_allowed: List[int] = [],
-        first_source_register_allowed: List[int] = [],
-        second_source_register_allowed: List[int] = []
+        target_register_allowed: List[int] = ALL_GENERAL_REGISTER,
+        first_source_register_allowed: List[int] = ALL_NONZERO_REGISTER,
+        second_source_register_allowed: List[int] = ALL_NONPC_REGISTER
     ):
         super().__init__(
             instruction_type=instruction_type,
@@ -232,6 +246,12 @@ class LOAD(Instruction):
                 "second source register"
             )
 
+    def checkRegisterCompliance(self, inst: List[int]):
+        self.checkSourceRegisterIsAllowed(inst)
+        self.checkTargetRegisterIsAllowed(inst)
+        self.checkFirstSourceRegisterIsAllowed(inst)
+        self.checkSecondSourceRegisterIsAllowed(inst)
+
 
 class STORE(Instruction):
     ftarget_register_bits = []
@@ -247,9 +267,9 @@ class STORE(Instruction):
         source_register: List[int] = [21, 20, 19, 18, 17, 16],
         first_target_register: List[int] = [],
         second_target_register: List[int] = [],
-        source_register_allowed: List[int] = [],
-        first_target_register_allowed: List[int] = [],
-        second_target_register_allowed: List[int] = []
+        source_register_allowed: List[int] = ALL_GENERAL_REGISTER,
+        first_target_register_allowed: List[int] = ALL_NONZERO_REGISTER,
+        second_target_register_allowed: List[int] = ALL_NONPC_REGISTER
     ):
         super().__init__(
             instruction_type=instruction_type,
@@ -332,6 +352,12 @@ class STORE(Instruction):
                 "second target register"
             )
 
+    def checkRegisterCompliance(self, inst: List[int]):
+        self.checkSourceRegisterIsAllowed(inst)
+        self.checkTargetRegisterIsAllowed(inst)
+        self.checkFirstSourceRegisterIsAllowed(inst)
+        self.checkSecondSourceRegisterIsAllowed(inst)
+
 
 class MOVE(Instruction):
     def __init__(
@@ -341,8 +367,8 @@ class MOVE(Instruction):
         op_code: List[int] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         source_register: List[int] = [5, 4, 3, 2, 1, 0],
         target_register: List[int] = [21, 20, 19, 18, 17, 16],
-        source_register_allowed: List[int] = [],
-        target_register_allowed: List[int] = []
+        source_register_allowed: List[int] = ALL_GENERAL_REGISTER,
+        target_register_allowed: List[int] = ALL_NONZERO_REGISTER
     ):
         super().__init__(
             instruction_type=instruction_type,
@@ -361,6 +387,10 @@ class MOVE(Instruction):
         self.checkSourceRegister()
         self.checkTargetRegister()
 
+    def checkRegisterCompliance(self, inst: List[int]):
+        self.checkSourceRegisterIsAllowed(inst)
+        self.checkTargetRegisterIsAllowed(inst)
+
 
 class INTEGER(Instruction):
     asource_register_bits = []
@@ -376,10 +406,10 @@ class INTEGER(Instruction):
         source_register: List[int] = [],
         another_source_register: List[int] = [],
         immediate_number: List[int] = [],
-        target_register_allowed: List[int] = [],
-        source_register_allowed: List[int] = [],
         another_immediate_number: List[int] = [],
-        another_source_register_allowed: List[int] = []
+        target_register_allowed: List[int] = ALL_GENERAL_REGISTER,
+        source_register_allowed: List[int] = ALL_REGISTER,
+        another_source_register_allowed: List[int] = ALL_REGISTER
     ):
         super().__init__(
             instruction_type=instruction_type,
@@ -446,6 +476,11 @@ class INTEGER(Instruction):
                 "another source register"
             )
 
+    def checkRegisterCompliance(self, inst: List[int]):
+        self.checkSourceRegisterIsAllowed(inst)
+        self.checkTargetRegisterIsAllowed(inst)
+        self.checkASoureceRegisterIsAllowed(inst)
+
 
 class BRANCH(Instruction):
     asource_register_bits = []
@@ -460,9 +495,9 @@ class BRANCH(Instruction):
         source_register: List[int] = [11, 10, 9, 8, 7, 6],
         another_source_register: List[int] = [],
         immediate_number: List[int] = [],
-        target_register_allowed: List[int] = [],
-        source_register_allowed: List[int] = [],
-        asource_register_allowed: List[int] = []
+        target_register_allowed: List[int] = ALL_GENERAL_REGISTER,
+        source_register_allowed: List[int] = ALL_REGISTER,
+        asource_register_allowed: List[int] = ALL_REGISTER
     ):
         super().__init__(
             instruction_type=instruction_type,
@@ -517,6 +552,11 @@ class BRANCH(Instruction):
                 "another source register"
             )
 
+    def checkRegisterCompliance(self, inst: List[int]):
+        self.checkSourceRegisterIsAllowed(inst)
+        self.checkTargetRegisterIsAllowed(inst)
+        self.checkASoureceRegisterIsAllowed(inst)
+
 
 class JUMP(Instruction):
     fsource_register_bits = []
@@ -532,8 +572,8 @@ class JUMP(Instruction):
         first_source_register: List[int] = [],
         second_source_register: List[int] = [],
         immediate_number: List[int] = [],
-        first_source_register_allowed: List[int] = [],
-        second_source_register_allowed: List[int] = []
+        first_source_register_allowed: List[int] = ALL_REGISTER,
+        second_source_register_allowed: List[int] = ALL_NONZERO_REGISTER
     ):
         super().__init__(
             instruction_type=instruction_type,
@@ -614,13 +654,19 @@ class JUMP(Instruction):
                 "second source register"
             )
 
+    def checkRegisterCompliance(self, inst: List[int]):
+        self.checkSourceRegisterIsAllowed(inst)
+        self.checkTargetRegisterIsAllowed(inst)
+        self.checkFirstSourceRegisterIsAllowed(inst)
+        self.checkSecondSourceRegisterIsAllowed(inst)
+
 
 class Instrucitons:
     LOAD8_IR = LOAD(
         "memory",
         "LOAD8",
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        immediate_number=[7, 6, 5, 4, 3, 2, 1, 0]
+        immediate_number=[7, 6, 5, 4, 3, 2, 1, 0],
     )
 
     LOAD8_RR = LOAD(
@@ -786,12 +832,14 @@ class Instrucitons:
         "integer",
         "ROR",
         [1, 0, 0, 0, 0, 0, 1, 1, 0, 1],
+        source_register_allowed=ALL_NONZERO_REGISTER
     )
 
     RXOR = INTEGER(
         "integer",
         "RXOR",
         [1, 0, 0, 0, 0, 0, 1, 1, 1, 0],
+        source_register_allowed=ALL_NONZERO_REGISTER
     )
 
     MUL_RR = INTEGER(
@@ -1092,16 +1140,46 @@ class Instrucitons:
     )
 
     def __init__(self):
-        pass
+        self.enable_instuctions = [
+            # LOAD
+            self.LOAD8_IR, self.LOAD8_RR, self.LOAD16_IR, self.LOAD16_RR,
+            self.LOAD32,
+            # STORE
+            self.STORE8, self.STORE16, self.STORE32,
+            # MOVE
+            self.MOVE,
+            # INTEGER
+            self.ADD_IR, self.ADD_RR, self.SUB_IR, self.SUB_RI, self.SUB_RR,
+            self.BAND_IR, self.BAND_RR, self.BOR_IR, self.BOR_RR, self.BNOT_I,
+            self.BNOT_R,
+            self.BXOR_IR, self.BXOR_RR, self.RAND, self.ROR, self.RXOR,
+            self.MUL_RI, self.MUL_RR, self.DIV_IR, self.DIV_RI, self.DIV_RR,
+            self.LS_II, self.LS_IR, self.LS_RI, self.LS_RR,
+            self.LRS_II, self.LRS_IR, self.LRS_RI, self.LRS_RR,
+            self.ARS_II, self.ARS_IR, self.ARS_RI, self.ARS_RR,
+            self.LCS_II, self.LCS_IR, self.LCS_RI, self.LCS_RR,
+            # BRANCH
+            self.GT_RI, self.GT_RR, self.EQ_RI, self.EQ_RR, self.LT_RI,
+            self.LT_RR, self.GTE_RI, self.GTE_RR, self.LTE_RI, self.LTE_RR,
+            # JUMP
+            self.JMP_I, self.JMP_R, self.OJMP_I, self.OJMP_R, self.ZJMP_I,
+            self.ZJMP_R,
+            # OTHERS
+            self.NOP
+        ]
 
-    def findInstruction(self, instruction: List[int]):
-        for i in dir(self):
-            if not i.startswith("__") and not i.endswith("__"):
+    def findInstruction(self, instruction: List[int]) -> Tuple[str, str]:
+        for i in self.enable_instuctions:
+            try:
+                i.isItThisInstruction(instruction)
+            except NotThisInstructionError:
+                continue
+            except Exception as e:
+                raise e
+            else:
                 try:
-                    getattr(self, i).isItThisInstruction(instruction)
-                except NotThisInstructionError:
-                    pass
+                    i.checkRegisterCompliance(instruction)
                 except Exception as e:
                     raise e
                 else:
-                    print(getattr(self, i).i_type, getattr(self, i).i_name)
+                    return i.i_type, i.i_name

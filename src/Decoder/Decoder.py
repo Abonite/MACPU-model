@@ -12,7 +12,7 @@ class Decoder:
         pass
 
     def decode(self, inst: List[int]):
-        self.__i_s.findInstruction(inst)
+        print(self.__i_s.findInstruction(inst))
 
 
 d = Decoder()
