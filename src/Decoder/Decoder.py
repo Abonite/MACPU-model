@@ -1,23 +1,30 @@
 from typing import List
 from InstructionSet import Instrucitons
+from DecoderExceptions import NoInstructionError, IllegalInstructionError
 
 
-class Decoder:
-    curr_instruction = [0 for _ in range(32)]
+class PreDecoder:
+    instructions = Instrucitons()
 
-    __i_s = Instrucitons()
+    instruction = []
 
     def __init__(self):
-        """left is high bit, right is low"""
-        pass
+        """The pre-decoding pipeline mainly detects data dependencies and adds
+        tags to the instructions that generate data"""
 
-    def decode(self, inst: List[int]):
-        print(self.__i_s.findInstruction(inst))
+    def latchInstruction(self, inst: List[int]):
+        self.instruction = inst
 
+    def checkInstruction(self):
+        if not self.instruction:
+            raise NoInstructionError
+        elif self.Instruciton == [0 for _ in range(32)]:
+            raise IllegalInstructionError
+        else:
+            return
 
-d = Decoder()
-d.decode([
-    1, 0, 0, 0, 1, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0])
+    def getInstrucionInfo(self):
+        try:
+            type, name = self.instructions.findInstruction(self.instruction)
+        except Exception as e:
+            raise e
