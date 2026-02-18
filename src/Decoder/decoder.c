@@ -37,313 +37,292 @@ struct Decoder new_decoder() {
         self->reg_C = source_code & REG_CODE_BITM;
 
         switch (op_code) {
-        // LOAD8 immediate
-        case 0b0000000001:
-            self->imme_type = BIT16_IMME;
+            // LOAD8 immediate
+            case 0b0000000001: {
+                self->imme_type = BIT16_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                0,
-                NULL,
-                0,
-                NULL,
-                BC_NO_CONST
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    BC_NO_CONST
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // LOAD8 register address
-        case 0b0000000010:
-            self->imme_type = NONE_IMME;
+            // LOAD8 register address
+            case 0b0000000010: {
+                self->imme_type = NONE_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                0,
-                NULL,
-                0,
-                NULL,
-                BC_CANT_BE_PC_SAME
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    BC_CANT_BE_PC_SAME
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // LOAD16 immediate
-        case 0b0000000011:
-            self->imme_type = BIT16_IMME;
+            // LOAD16 immediate
+            case 0b0000000011: {
+                self->imme_type = BIT16_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                0,
-                NULL,
-                0,
-                NULL,
-                BC_NO_CONST
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    BC_NO_CONST
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // LOAD16 register address
-        case 0b0000000100:
-            self->imme_type = NONE_IMME;
+            // LOAD16 register address
+            case 0b0000000100: {
+                self->imme_type = NONE_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                0,
-                NULL,
-                0,
-                NULL,
-                BC_CANT_BE_PC_SAME
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    BC_CANT_BE_PC_SAME
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // LOAD32 register address
-        case 0b0000000101:
-            self->imme_type = NONE_IMME;
+            // LOAD32 register address
+            case 0b0000000101:
+                self->imme_type = NONE_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                0,
-                NULL,
-                0,
-                NULL,
-                BC_NO_CONST
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    BC_NO_CONST
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+                break;
+
+            // STORE8
+            case 0b0000000110: {
+                self->imme_type = NONE_IMME;
+
+                unsigned char invld_a_val[] = {PC, ZERO};
+                unsigned char invld_b_val[] = {ZERO};
+                unsigned char invld_c_val[] = {PC};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    1,
+                    &invld_b_val,
+                    1,
+                    &invld_c_val,
+                    BC_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
+            // STORE16
+            case 0b0000000111: {
+                self->imme_type = NONE_IMME;
 
-        // STORE8
-        case 0b0000000110:
-            self->imme_type = NONE_IMME;
+                unsigned char invld_a_val[] = {PC, ZERO};
+                unsigned char invld_b_val[] = {ZERO};
+                unsigned char invld_c_val[] = {PC};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    1,
+                    &invld_b_val,
+                    1,
+                    &invld_c_val,
+                    BC_NO_CONST
+                };
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            unsigned char invld_b_val[] = {ZERO};
-            unsigned char invld_c_val[] = {PC};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                1,
-                &invld_b_val,
-                1,
-                &invld_c_val,
-                BC_NO_CONST
-            };
-
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // STORE16
-        case 0b0000000111:
-            self->imme_type = NONE_IMME;
+            // STORE32
+            case 0b0000001000: {
+                self->imme_type = NONE_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            unsigned char invld_b_val[] = {ZERO};
-            unsigned char invld_c_val[] = {PC};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                1,
-                &invld_b_val,
-                1,
-                &invld_c_val,
-                BC_NO_CONST
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                unsigned char invld_b_val[] = {ZERO};
+                unsigned char invld_c_val[] = {PC};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    1,
+                    &invld_b_val,
+                    1,
+                    &invld_c_val,
+                    BC_NO_CONST
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // STORE32
-        case 0b0000001000:
-            self->imme_type = NONE_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            unsigned char invld_b_val[] = {ZERO};
-            unsigned char invld_c_val[] = {PC};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                1,
-                &invld_b_val,
-                1,
-                &invld_c_val,
-                BC_NO_CONST
-            };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+            // MOVE
+            case 0b0000001001: {
+                self->imme_type = NONE_IMME;
+
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    BC_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
 
 
-        // MOVE
-        case 0b0000001001:
-            self->imme_type = NONE_IMME;
+            // ADD immediate
+            case 0b1000000000: {
+                self->imme_type = BIT10_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                0,
-                NULL,
-                0,
-                NULL,
-                BC_NO_CONST
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    1,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    B_ISNT_REG
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
+            // ADD register
+            case 0b1000000001: {
+                self->imme_type = NONE_IMME;
 
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    BC_NO_CONST
+                };
 
-        // ADD immediate
-        case 0b1000000000:
-            self->imme_type = BIT10_IMME;
-
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                1,
-                0,
-                NULL,
-                0,
-                NULL,
-                B_ISNT_REG
-            };
-
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // ADD register
-        case 0b1000000001:
-            self->imme_type = NONE_IMME;
+            // SUB immediate (imme - reg)
+            case 0b1000000010: {
+                self->imme_type = BIT10_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                0,
-                NULL,
-                0,
-                NULL,
-                BC_NO_CONST
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    1,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    B_ISNT_REG
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // SUB immediate (imme - reg)
-        case 0b1000000010:
-            self->imme_type = BIT10_IMME;
+            // SUB immediate (reg - imme)
+            case 0b1000000011: {
+                self->imme_type = BIT10_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                1,
-                0,
-                NULL,
-                0,
-                NULL,
-                B_ISNT_REG
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    1,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    B_ISNT_REG
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // SUB immediate (reg - imme)
-        case 0b1000000011:
-            self->imme_type = BIT10_IMME;
+            // SUB register
+            case 0b1000000100: {
+                self->imme_type = NONE_IMME;
 
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                1,
-                0,
-                NULL,
-                0,
-                NULL,
-                B_ISNT_REG
-            };
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    BC_NO_CONST
+                };
 
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+                struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
-            break;
-        // SUB register
-        case 0b1000000100:
-            self->imme_type = NONE_IMME;
-
-            unsigned char invld_a_val[] = {PC, ZERO};
-            struct Checker checker = {
-                2,
-                &invld_a_val,
-                0,
-                0,
-                NULL,
-                0,
-                NULL,
-                BC_NO_CONST
-            };
-
-            struct CheckResult check_result = self->check(self, checker);
-            if (!check_result.check_pass) {
+            default: {
+                char error_msg[] = "Unknown instruction.\0";
+                struct CheckResult check_result = {
+                    0,
+                    1,
+                    &error_msg
+                };
                 return check_result;
             }
-            break;
-        default:
-            break;
         }
     }
 

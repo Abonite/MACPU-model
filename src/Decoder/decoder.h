@@ -60,13 +60,13 @@
         unsigned char *c_invld_val;
 
         unsigned char bc_const;
-    }
+    };
 
     struct CheckResult {
         int check_pass;
         int is_fatal;
         char *error_msg;
-    }
+    };
 
     #define NONE_IMME   0
     #define BIT16_IMME  2
@@ -82,7 +82,7 @@
 
         struct CheckResult (*decode)(struct Decoder *self, int source_code);
         struct CheckResult (*check)(struct Decoder *self, struct Checker checker);
-    }
+    };
 
     struct Decoder new_decoder();
 
