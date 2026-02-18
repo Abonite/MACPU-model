@@ -347,10 +347,80 @@ struct Decoder new_decoder() {
         }
     }
 
-    int meth_check_impl(struct Decoder *self, struct Checker checker) {
+    struct CheckResult meth_check_impl(struct Decoder *self, struct Checker checker) {
+        struct CheckResult check_result = {
+            0,
+            1,
+            NULL
+        };
+
         for (int i_a_c = 0; i_a_c < checker.a_invld_num; i_a_c++) {
             if (self->reg_A == checker.a_invld_val[i_a_c]) {
+                // Error: invalid reg A
+                char error_msg[] = "Invalid reg A.\0";
+                check_result.error_msg = &error_msg;
+                return check_result;
             }
         }
+
+        for (int i_c_c = 0; i_c_c < checker.c_invld_num; i_c_c++) {
+            if (self->reg_C == checker.c_invld_val[i_c_c]) {
+                // Error: invalid reg C
+                char error_msg[] = "Invalid reg C.\0";
+                check_result.error_msg = &error_msg;
+                return check_result;
+            }
+        }
+
+        if (!checker.p_vld && (self->mid_p != 0)) {
+            // Error: invalid p
+            char error_msg[] = "Invalid P value.\0";
+            check_result.error_msg = &error_msg;
+            return check_result;
+        }
+
+        switch (checker.bc_const) {
+            case BC_NO_CONST:
+                for (int i_b_c = 0; i_b_c < checker.b_invld_num; i_b_c++) {
+                    if (self->reg_B == checker.b_invld_val[i_b_c]) {
+                        // Error: invalid reg B
+                        char error_msg[] = "Invalid reg B.\0";
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                    }
+                }
+                break;
+            case BC_CANT_BE_PC_SAME:
+                for (int i_b_c = 0; i_b_c < checker.b_invld_num; i_b_c++) {
+                    if (self->reg_B == checker.b_invld_val[i_b_c]) {
+                        // Error: invalid reg B
+                        char error_msg[] = "Invalid reg B.\0";
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                    }
+                }
+
+                if ((self->reg_B == self->reg_C) && (self->reg_B == PC)) {
+                    // Error: reg B equ reg C
+                    char error_msg[] = "Reg B can't be same as reg C, which is equal to PC.\0";
+                    check_result.error_msg = &error_msg;
+                    return check_result;
+                }
+                break;
+            case B_ISNT_REG:
+                break;
+            
+            default:
+                // Error: invalid check const
+                char error_msg[] = "Invalid check const.\0";
+                check_result.is_fatal = 0;
+                check_result.error_msg = &error_msg;
+                return check_result;
+                break;
+        }
+
+        check_result.check_pass = 1;
+        check_result.is_fatal = 0;
+        return check_result;
     }
 #endif

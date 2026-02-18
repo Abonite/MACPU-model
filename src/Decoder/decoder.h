@@ -64,6 +64,7 @@
 
     struct CheckResult {
         int check_pass;
+        int is_fatal;
         char *error_msg;
     }
 
