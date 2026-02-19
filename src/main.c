@@ -3,24 +3,27 @@
 
 #define __32bit__
 
+#include "FetchInst/Programcounter.h"
 #include "Decoder/decoder.h"
 #include "ROM/rom.h"
+#include "RAM/ram.h"
+#include "storage.h"
 
 int main(int argc, char *argv[]) {
-    char *init_file_path = NULL;
-    int ram_size = 0;
+    char *init_file_path = "H:\\Code\\MACPU-model\\docs\\test.rom";
 
-    for (int i = 0; i < argc; i++) {
-        if (argv[i] == "--rom") {
-            init_file_path = argv[i + 1];
-        } else if (argv[i] == "--ram-size") {
-            ram_size = atoi(argv[i + 1]);
-        } else if (argv[i] == "--rom-start-addr") {
-            ram_size = atoi(argv[i + 1]);
-        }
-    }
+    struct Rom rom = new_rom(init_file_path, 0x00, 512);
+    struct Ram ram = new_ram(8192, 0x00);
+    struct Storage storage = new_storage(0, ram, 0xFFFFFFFF - 512, rom, 0xFF);
 
+    struct ProgramCounter pc = new_programcounter();
     struct Decoder decoder = new_decoder();
 
-    struct CheckResult result = decoder.decode(&decoder, 0);
+    pc.reset(&pc, -4);
+
+    while (1) {
+        char *data = storage.read(&storage, pc.current_value);
+        struct CheckResult result = decoder.decode(&decoder, data);
+        pc.operate(&pc, 4);
+    }
 }

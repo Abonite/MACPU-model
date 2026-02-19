@@ -80,12 +80,12 @@
         unsigned char reg_B;
         unsigned char reg_C;
 
-        struct CheckResult (*decode)(struct Decoder *self, int source_code);
+        struct CheckResult (*decode)(struct Decoder *self, unsigned char *source_code);
         struct CheckResult (*check)(struct Decoder *self, struct Checker checker);
     };
 
     struct Decoder new_decoder();
 
-    struct CheckResult meth_decode_impl(struct Decoder *self, int source_code);
+    struct CheckResult meth_decode_impl(struct Decoder *self, unsigned char *source_code);
     struct CheckResult meth_check_impl(struct Decoder *self, struct Checker checker);
 #endif

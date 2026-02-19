@@ -28,13 +28,18 @@ struct Decoder new_decoder() {
     #define REG_CODE_BITM   0b111111
     #define P_CODE_BITM     0b1111
 
-    struct CheckResult meth_decode_impl(struct Decoder *self, int source_code) {
+    struct CheckResult meth_decode_impl(struct Decoder *self, unsigned char *source_code) {
+        unsigned int code;
+        for (int i = 0; i < 4; i++) {
+            code = code | (source_code[i] << (i * 8));
+        }
+
         unsigned short op_code = 0;
-        op_code = (source_code & (OP_CODE_BITM << OP_CODE_LBIT)) >> OP_CODE_LBIT;
-        self->reg_A = (source_code & (REG_CODE_BITM << REGA_CODE_LBIT)) >> REGA_CODE_LBIT;
-        self->mid_p = (source_code & (P_CODE_BITM << P_CODE_LBIT)) >> P_CODE_LBIT;
-        self->reg_B = (source_code & (REG_CODE_BITM << REGB_CODE_LBIT)) >> REGB_CODE_LBIT;
-        self->reg_C = source_code & REG_CODE_BITM;
+        op_code = (code & (OP_CODE_BITM << OP_CODE_LBIT)) >> OP_CODE_LBIT;
+        self->reg_A = (code & (REG_CODE_BITM << REGA_CODE_LBIT)) >> REGA_CODE_LBIT;
+        self->mid_p = (code & (P_CODE_BITM << P_CODE_LBIT)) >> P_CODE_LBIT;
+        self->reg_B = (code & (REG_CODE_BITM << REGB_CODE_LBIT)) >> REGB_CODE_LBIT;
+        self->reg_C = code & REG_CODE_BITM;
 
         switch (op_code) {
             // LOAD8 immediate
