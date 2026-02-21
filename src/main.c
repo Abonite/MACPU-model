@@ -10,11 +10,11 @@
 #include "storage.h"
 
 int main(int argc, char *argv[]) {
-    char *init_file_path = "H:\\Code\\MACPU-model\\docs\\test.rom";
+    char *init_file_path = "H:\\Code\\MACPU-model\\docs\\test.bo";
 
-    struct Rom rom = new_rom(init_file_path, 0x00, 512);
+    struct Rom rom = new_rom(init_file_path, 0x00, 65536);
     struct Ram ram = new_ram(8192, 0x00);
-    struct Storage storage = new_storage(0, ram, 0xFFFFFFFF - 512, rom, 0xFF);
+    struct Storage storage = new_storage(0, ram, 0xFFFFFFFF - 65535, rom, 0xFF);
 
     struct ProgramCounter pc = new_programcounter();
     struct Decoder decoder = new_decoder();

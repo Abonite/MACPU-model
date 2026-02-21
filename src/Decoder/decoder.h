@@ -46,18 +46,15 @@
     #define DSP 39
     #define DDS 40
 
-    #define BC_NO_CONST         0
-    #define BC_CANT_BE_PC_SAME  1
-    #define B_ISNT_REG          2
+    #define S0S1_NO_CONST   0
 
     struct Checker {
-        int a_invld_num;
-        unsigned char *a_invld_val;
-        int p_vld;
-        int b_invld_num;
-        unsigned char *b_invld_val;
-        int c_invld_num;
-        unsigned char *c_invld_val;
+        int target_invld_num;
+        unsigned char *target_invld_val;
+        int source_0_invld_num;
+        unsigned char *source_0_invld_val;
+        int source_1_invld_num;
+        unsigned char *source_1_invld_val;
 
         unsigned char bc_const;
     };
@@ -68,17 +65,20 @@
         char *error_msg;
     };
 
-    #define NONE_IMME   0
-    #define BIT16_IMME  2
-    #define BIT10_IMME  3
+    #define OP_TI  0
+    #define OP_I   20
+    #define OP_TS  40
+    #define OP_TSI 60
+    #define OP_TSS 80
+    #define OP_TII 100
 
     struct Decoder {
-        unsigned char reg_A;
+        unsigned char reg_target;
 
-        unsigned char imme_type;
-        unsigned char mid_p;
-        unsigned char reg_B;
-        unsigned char reg_C;
+        unsigned char code_type;
+        unsigned char reg_source_0;
+        unsigned char reg_source_1;
+        unsigned char p;
 
         struct CheckResult (*decode)(struct Decoder *self, unsigned char *source_code);
         struct CheckResult (*check)(struct Decoder *self, struct Checker checker);

@@ -2,11 +2,11 @@
 #include "ROM/rom.h"
 
 struct Storage {
-    unsigned int ram_start_addr;
-    unsigned int ram_end_addr;
+    unsigned long long int ram_start_addr;
+    unsigned long long int ram_end_addr;
     struct Ram ram;
-    unsigned int rom_start_addr;
-    unsigned int rom_end_addr;
+    unsigned long long int rom_start_addr;
+    unsigned long long int rom_end_addr;
     struct Rom rom;
 
     unsigned char undefine_value;

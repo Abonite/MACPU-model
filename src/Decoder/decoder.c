@@ -22,9 +22,9 @@ struct Decoder new_decoder() {
     #define OP_CODE_LBIT 22 // low bit at 22
     #define OP_CODE_BITM 0b1111111111
 
-    #define REGA_CODE_LBIT  16 // low bit at 16
-    #define P_CODE_LBIT     12
-    #define REGB_CODE_LBIT  6
+    #define REGT_CODE_LBIT  16 // low bit at 16
+    #define REGS0_CODE_LBIT 10
+    #define REGS1_CODE_LBIT 4
     #define REG_CODE_BITM   0b111111
     #define P_CODE_BITM     0b1111
 
@@ -36,26 +36,25 @@ struct Decoder new_decoder() {
 
         unsigned short op_code = 0;
         op_code = (code & (OP_CODE_BITM << OP_CODE_LBIT)) >> OP_CODE_LBIT;
-        self->reg_A = (code & (REG_CODE_BITM << REGA_CODE_LBIT)) >> REGA_CODE_LBIT;
-        self->mid_p = (code & (P_CODE_BITM << P_CODE_LBIT)) >> P_CODE_LBIT;
-        self->reg_B = (code & (REG_CODE_BITM << REGB_CODE_LBIT)) >> REGB_CODE_LBIT;
-        self->reg_C = code & REG_CODE_BITM;
+        self->reg_target = (code & (REG_CODE_BITM << REGT_CODE_LBIT)) >> REGT_CODE_LBIT;
+        self->reg_source_0 = (code & (P_CODE_BITM << REGS0_CODE_LBIT)) >> REGS0_CODE_LBIT;
+        self->reg_source_1 = (code & (REG_CODE_BITM << REGS1_CODE_LBIT)) >> REGS1_CODE_LBIT;
+        self->p = code & P_CODE_BITM;
 
         switch (op_code) {
             // LOAD8 immediate
             case 0b0000000001: {
-                self->imme_type = BIT16_IMME;
+                self->code_type = OP_TI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
                     0,
-                    0,
                     NULL,
                     0,
                     NULL,
-                    BC_NO_CONST
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -63,18 +62,17 @@ struct Decoder new_decoder() {
             }
             // LOAD8 register address
             case 0b0000000010: {
-                self->imme_type = NONE_IMME;
+                self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
                     0,
-                    0,
                     NULL,
                     0,
                     NULL,
-                    BC_CANT_BE_PC_SAME
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -82,18 +80,17 @@ struct Decoder new_decoder() {
             }
             // LOAD16 immediate
             case 0b0000000011: {
-                self->imme_type = BIT16_IMME;
+                self->code_type = OP_TI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
                     0,
-                    0,
                     NULL,
                     0,
                     NULL,
-                    BC_NO_CONST
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -101,18 +98,17 @@ struct Decoder new_decoder() {
             }
             // LOAD16 register address
             case 0b0000000100: {
-                self->imme_type = NONE_IMME;
+                self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
                     0,
-                    0,
                     NULL,
                     0,
                     NULL,
-                    BC_CANT_BE_PC_SAME
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -120,18 +116,17 @@ struct Decoder new_decoder() {
             }
             // LOAD32 register address
             case 0b0000000101:
-                self->imme_type = NONE_IMME;
+                self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
                     0,
-                    0,
                     NULL,
                     0,
                     NULL,
-                    BC_NO_CONST
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -140,7 +135,7 @@ struct Decoder new_decoder() {
 
             // STORE8
             case 0b0000000110: {
-                self->imme_type = NONE_IMME;
+                self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 unsigned char invld_b_val[] = {ZERO};
@@ -148,12 +143,11 @@ struct Decoder new_decoder() {
                 struct Checker checker = {
                     2,
                     &invld_a_val,
-                    0,
                     1,
                     &invld_b_val,
                     1,
                     &invld_c_val,
-                    BC_NO_CONST
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -161,7 +155,7 @@ struct Decoder new_decoder() {
             }
             // STORE16
             case 0b0000000111: {
-                self->imme_type = NONE_IMME;
+                self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 unsigned char invld_b_val[] = {ZERO};
@@ -169,12 +163,11 @@ struct Decoder new_decoder() {
                 struct Checker checker = {
                     2,
                     &invld_a_val,
-                    0,
                     1,
                     &invld_b_val,
                     1,
                     &invld_c_val,
-                    BC_NO_CONST
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -182,7 +175,7 @@ struct Decoder new_decoder() {
             }
             // STORE32
             case 0b0000001000: {
-                self->imme_type = NONE_IMME;
+                self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 unsigned char invld_b_val[] = {ZERO};
@@ -190,12 +183,11 @@ struct Decoder new_decoder() {
                 struct Checker checker = {
                     2,
                     &invld_a_val,
-                    0,
                     1,
                     &invld_b_val,
                     1,
                     &invld_c_val,
-                    BC_NO_CONST
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -205,18 +197,17 @@ struct Decoder new_decoder() {
 
             // MOVE
             case 0b0000001001: {
-                self->imme_type = NONE_IMME;
+                self->code_type = OP_TS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
                     0,
-                    0,
                     NULL,
                     0,
                     NULL,
-                    BC_NO_CONST
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -226,18 +217,17 @@ struct Decoder new_decoder() {
 
             // ADD immediate
             case 0b1000000000: {
-                self->imme_type = BIT10_IMME;
+                self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
-                    1,
                     0,
                     NULL,
                     0,
                     NULL,
-                    B_ISNT_REG
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -245,56 +235,53 @@ struct Decoder new_decoder() {
             }
             // ADD register
             case 0b1000000001: {
-                self->imme_type = NONE_IMME;
+                self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
                     0,
-                    0,
                     NULL,
                     0,
                     NULL,
-                    BC_NO_CONST
-                };
-
-                struct CheckResult check_result = self->check(self, checker);
-                return check_result;
-            }
-            // SUB immediate (imme - reg)
-            case 0b1000000010: {
-                self->imme_type = BIT10_IMME;
-
-                unsigned char invld_a_val[] = {PC, ZERO};
-                struct Checker checker = {
-                    2,
-                    &invld_a_val,
-                    1,
-                    0,
-                    NULL,
-                    0,
-                    NULL,
-                    B_ISNT_REG
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
             // SUB immediate (reg - imme)
-            case 0b1000000011: {
-                self->imme_type = BIT10_IMME;
+            case 0b1000000010: {
+                self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
-                    1,
                     0,
                     NULL,
                     0,
                     NULL,
-                    B_ISNT_REG
+                    S0S1_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+            }
+            // SUB immediate (imme - reg)
+            case 0b1000000011: {
+                self->code_type = OP_TSI;
+
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -302,18 +289,17 @@ struct Decoder new_decoder() {
             }
             // SUB register
             case 0b1000000100: {
-                self->imme_type = NONE_IMME;
+                self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
                     0,
-                    0,
                     NULL,
                     0,
                     NULL,
-                    BC_NO_CONST
+                    S0S1_NO_CONST
                 };
 
                 struct CheckResult check_result = self->check(self, checker);
@@ -338,69 +324,93 @@ struct Decoder new_decoder() {
             NULL
         };
 
-        for (int i_a_c = 0; i_a_c < checker.a_invld_num; i_a_c++) {
-            if (self->reg_A == checker.a_invld_val[i_a_c]) {
-                // Error: invalid reg A
-                char error_msg[] = "Invalid reg A.\0";
-                check_result.error_msg = &error_msg;
-                return check_result;
-            }
-        }
-
-        for (int i_c_c = 0; i_c_c < checker.c_invld_num; i_c_c++) {
-            if (self->reg_C == checker.c_invld_val[i_c_c]) {
-                // Error: invalid reg C
-                char error_msg[] = "Invalid reg C.\0";
-                check_result.error_msg = &error_msg;
-                return check_result;
-            }
-        }
-
-        if (!checker.p_vld && (self->mid_p != 0)) {
-            // Error: invalid p
-            char error_msg[] = "Invalid P value.\0";
-            check_result.error_msg = &error_msg;
-            return check_result;
-        }
-
-        switch (checker.bc_const) {
-            case BC_NO_CONST:
-                for (int i_b_c = 0; i_b_c < checker.b_invld_num; i_b_c++) {
-                    if (self->reg_B == checker.b_invld_val[i_b_c]) {
-                        // Error: invalid reg B
-                        char error_msg[] = "Invalid reg B.\0";
+        switch (self->code_type) {
+            case OP_TI: {
+                for (int i_a_c = 0; i_a_c < checker.target_invld_num; i_a_c++) {
+                    if (self->reg_target == checker.target_invld_val[i_a_c]) {
+                        // Error: invalid reg A
+                        char error_msg[] = "Invalid reg A.\0";
                         check_result.error_msg = &error_msg;
                         return check_result;
                     }
                 }
-                break;
-            case BC_CANT_BE_PC_SAME:
-                for (int i_b_c = 0; i_b_c < checker.b_invld_num; i_b_c++) {
-                    if (self->reg_B == checker.b_invld_val[i_b_c]) {
-                        // Error: invalid reg B
-                        char error_msg[] = "Invalid reg B.\0";
-                        check_result.error_msg = &error_msg;
-                        return check_result;
-                    }
-                }
-
-                if ((self->reg_B == self->reg_C) && (self->reg_B == PC)) {
-                    // Error: reg B equ reg C
-                    char error_msg[] = "Reg B can't be same as reg C, which is equal to PC.\0";
-                    check_result.error_msg = &error_msg;
-                    return check_result;
-                }
-                break;
-            case B_ISNT_REG:
-                break;
-            
-            default:
-                // Error: invalid check const
-                char error_msg[] = "Invalid check const.\0";
+            }
+            case OP_I: {
+                check_result.check_pass = 1;
                 check_result.is_fatal = 0;
-                check_result.error_msg = &error_msg;
                 return check_result;
-                break;
+            }
+            case OP_TS: {
+                for (int i_t_c = 0; i_t_c < checker.target_invld_num; i_t_c++) {
+                    if (self->reg_target == checker.target_invld_val[i_t_c]) {
+                        char error_msg[] = "Invalid target register.\0";
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                    }
+                }
+
+                for (int i_s0_c = 0; i_s0_c < checker.source_0_invld_num; i_s0_c++) {
+                    if (self->reg_source_0 == checker.source_0_invld_val[i_s0_c]) {
+                        char error_msg[] = "Invalid source 0 register.\0";
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                    }
+                }
+            }
+            case OP_TSI: {
+                for (int i_t_c = 0; i_t_c < checker.target_invld_num; i_t_c++) {
+                    if (self->reg_target == checker.target_invld_val[i_t_c]) {
+                        char error_msg[] = "Invalid target register.\0";
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                    }
+                }
+
+                for (int i_s0_c = 0; i_s0_c < checker.source_0_invld_num; i_s0_c++) {
+                    if (self->reg_source_0 == checker.source_0_invld_val[i_s0_c]) {
+                        char error_msg[] = "Invalid source 0 register.\0";
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                    }
+                }
+            }
+            case OP_TSS: {
+                for (int i_t_c = 0; i_t_c < checker.target_invld_num; i_t_c++) {
+                    if (self->reg_target == checker.target_invld_val[i_t_c]) {
+                        char error_msg[] = "Invalid target register.\0";
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                    }
+                }
+
+                for (int i_s0_c = 0; i_s0_c < checker.source_0_invld_num; i_s0_c++) {
+                    if (self->reg_source_0 == checker.source_0_invld_val[i_s0_c]) {
+                        char error_msg[] = "Invalid source 0 register.\0";
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                    }
+                }
+
+                for (int i_s1_c = 0; i_s1_c < checker.source_1_invld_num; i_s1_c++) {
+                    if (self->reg_source_1 == checker.source_1_invld_val[i_s1_c]) {
+                        char error_msg[] = "Invalid source 1 register.\0";
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                    }
+                }
+
+                switch (checker.bc_const) {
+                    case S0S1_NO_CONST:
+                        break;            
+                    default:
+                        // Error: invalid check const
+                        char error_msg[] = "Invalid check const.\0";
+                        check_result.is_fatal = 0;
+                        check_result.error_msg = &error_msg;
+                        return check_result;
+                        break;
+                }
+            }
         }
 
         check_result.check_pass = 1;
