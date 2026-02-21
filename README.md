@@ -17,9 +17,9 @@ Not finish.
 
 ```mermaid
 graph TD
-	fetch_instruction --> decoding_instruction_related_judgment
-	decoding_instruction_related_judgment --> decoding
-	decoding --> out-of-order_launch
+	fetch_instruction --> decoding
+	decoding --> preload_data
+	preload_data --> out-of-order_launch
 	out-of-order_launch --> excution
 	excution --> sequence
 	sequence --> writeback
