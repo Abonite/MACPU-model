@@ -10,13 +10,13 @@ struct Storage new_storage(unsigned int ram_start_addr, struct Ram ram, unsigned
         rom,
         undefine_value,
 
-        meth_read_impl,
-        meth_write_impl
+        storage_meth_read_impl,
+        storage_meth_write_impl
     };
     return storage;
 };
 
-unsigned char* meth_read_impl(struct Storage *self, unsigned int address) {
+unsigned char* storage_meth_read_impl(struct Storage *self, unsigned int address) {
     unsigned char value[4] = {0, 0, 0, 0};
 
     unsigned int d = 0;
@@ -34,7 +34,7 @@ unsigned char* meth_read_impl(struct Storage *self, unsigned int address) {
     return value;
 }
 
-int meth_write_impl(struct Storage *self, unsigned int address, unsigned int size, unsigned char *data) {
+int storage_meth_write_impl(struct Storage *self, unsigned int address, unsigned int size, unsigned char *data) {
     unsigned int d = 0;
     for (unsigned int i = address; i < address + size; i++) {
         if ((i >= self->ram_start_addr) && (i <= self->ram_end_addr)) {

@@ -5,6 +5,9 @@
 
 #include "FetchInst/Programcounter.h"
 #include "Decoder/decoder.h"
+#include "Decoder/prefetchdata.h"
+#include "ALU/alu.h"
+#include "ALU/registerfile.h"
 #include "ROM/rom.h"
 #include "RAM/ram.h"
 #include "storage.h"
@@ -18,12 +21,21 @@ int main(int argc, char *argv[]) {
 
     struct ProgramCounter pc = new_programcounter();
     struct Decoder decoder = new_decoder();
+    struct RegisterFile register_file = new_registerfile();
 
     pc.reset(&pc, -4);
 
+    char *fetch_data;
     while (1) {
         char *data = storage.read(&storage, pc.current_value);
-        struct CheckResult result = decoder.decode(&decoder, data);
         pc.operate(&pc, 4);
+        struct CheckResult result = decoder.decode(&decoder, data);
+        struct DataFetcher data_fetcher = new_datafetcher(&decoder, &register_file);
+
+        if (data_fetcher.data_need_fetch) {
+            fetch_data = storage.read(&storage, data_fetcher.address);
+        }
+
+        integer_caculate_unit(&decoder, fetch_data, &pc, &register_file);
     }
 }

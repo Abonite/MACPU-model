@@ -16,5 +16,5 @@ struct Storage {
 };
 
 struct Storage new_storage(unsigned int ram_start_addr, struct Ram ram, unsigned int rom_start_addr, struct Rom rom, unsigned char undefine_value);
-unsigned char* meth_read_impl(struct Storage *self, unsigned int address);
-int meth_write_impl(struct Storage *self, unsigned int address, unsigned int size, unsigned char *data);
+unsigned char* storage_meth_read_impl(struct Storage *self, unsigned int address);
+int storage_meth_write_impl(struct Storage *self, unsigned int address, unsigned int size, unsigned char *data);

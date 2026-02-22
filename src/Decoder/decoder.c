@@ -3,6 +3,8 @@
 #define __32bit__
 
 #include "decoder.h"
+#include "opcode.h"
+#include "../ALU/register.h"
 
 struct Decoder new_decoder() {
     struct Decoder result = {
@@ -11,8 +13,9 @@ struct Decoder new_decoder() {
         0,
         0,
         0,
-        meth_decode_impl,
-        meth_check_impl
+        0,
+        decoder_meth_decode_impl,
+        decoder_meth_check_impl
     };
 
     return result;
@@ -28,22 +31,22 @@ struct Decoder new_decoder() {
     #define REG_CODE_BITM   0b111111
     #define P_CODE_BITM     0b1111
 
-    struct CheckResult meth_decode_impl(struct Decoder *self, unsigned char *source_code) {
+    struct CheckResult decoder_meth_decode_impl(struct Decoder *self, unsigned char *source_code) {
         unsigned int code;
         for (int i = 0; i < 4; i++) {
             code = code | (source_code[i] << (i * 8));
         }
 
-        unsigned short op_code = 0;
-        op_code = (code & (OP_CODE_BITM << OP_CODE_LBIT)) >> OP_CODE_LBIT;
+        self->op_code = 0;
+        self->op_code = (code & (OP_CODE_BITM << OP_CODE_LBIT)) >> OP_CODE_LBIT;
         self->reg_target = (code & (REG_CODE_BITM << REGT_CODE_LBIT)) >> REGT_CODE_LBIT;
         self->reg_source_0 = (code & (P_CODE_BITM << REGS0_CODE_LBIT)) >> REGS0_CODE_LBIT;
         self->reg_source_1 = (code & (REG_CODE_BITM << REGS1_CODE_LBIT)) >> REGS1_CODE_LBIT;
         self->p = code & P_CODE_BITM;
 
-        switch (op_code) {
+        switch (self->op_code) {
             // LOAD8 immediate
-            case 0b0000000001: {
+            case LOAD8_IMME: {
                 self->code_type = OP_TI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -61,7 +64,7 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // LOAD8 register address
-            case 0b0000000010: {
+            case LOAD8_REG: {
                 self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -79,7 +82,7 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // LOAD16 immediate
-            case 0b0000000011: {
+            case LOAD16_IMME: {
                 self->code_type = OP_TI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -97,7 +100,7 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // LOAD16 register address
-            case 0b0000000100: {
+            case LOAD16_REG: {
                 self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -115,7 +118,7 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // LOAD32 register address
-            case 0b0000000101:
+            case LOAD32:
                 self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -134,7 +137,7 @@ struct Decoder new_decoder() {
                 break;
 
             // STORE8
-            case 0b0000000110: {
+            case STORE8: {
                 self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -154,7 +157,7 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // STORE16
-            case 0b0000000111: {
+            case STORE16: {
                 self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -174,7 +177,7 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // STORE32
-            case 0b0000001000: {
+            case STORE32: {
                 self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -196,7 +199,7 @@ struct Decoder new_decoder() {
 
 
             // MOVE
-            case 0b0000001001: {
+            case MOVE: {
                 self->code_type = OP_TS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -216,7 +219,7 @@ struct Decoder new_decoder() {
 
 
             // ADD immediate
-            case 0b1000000000: {
+            case ADD_IMME: {
                 self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -234,7 +237,7 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // ADD register
-            case 0b1000000001: {
+            case ADD_REG: {
                 self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -252,7 +255,7 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // SUB immediate (reg - imme)
-            case 0b1000000010: {
+            case SUB_IMME_RI: {
                 self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -270,7 +273,7 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // SUB immediate (imme - reg)
-            case 0b1000000011: {
+            case SUB_IMME_IR: {
                 self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
@@ -288,13 +291,47 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             // SUB register
-            case 0b1000000100: {
+            case SUB_REG: {
                 self->code_type = OP_TSS;
 
                 unsigned char invld_a_val[] = {PC, ZERO};
                 struct Checker checker = {
                     2,
                     &invld_a_val,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    S0S1_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+            }
+            // JMP Immediate
+            case JMP_IMME: {
+                self->code_type = OP_I;
+
+                struct Checker checker = {
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    S0S1_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+            }
+            // JMP register
+            case JMP_REG: {
+                self->code_type = OP_SS;
+
+                struct Checker checker = {
+                    0,
+                    NULL,
                     0,
                     NULL,
                     0,
@@ -317,7 +354,7 @@ struct Decoder new_decoder() {
         }
     }
 
-    struct CheckResult meth_check_impl(struct Decoder *self, struct Checker checker) {
+    struct CheckResult decoder_meth_check_impl(struct Decoder *self, struct Checker checker) {
         struct CheckResult check_result = {
             0,
             1,
