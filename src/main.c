@@ -32,10 +32,14 @@ int main(int argc, char *argv[]) {
         struct CheckResult result = decoder.decode(&decoder, data);
         struct DataFetcher data_fetcher = new_datafetcher(&decoder, &register_file);
 
+        unsigned int fetched_immediate_number = 0;
         if (data_fetcher.data_need_fetch) {
             fetch_data = storage.read(&storage, data_fetcher.address);
+            for (int i = 3; i >= 0; i--) {
+                fetched_immediate_number = fetched_immediate_number | (fetch_data[i] << (i * 8));
+            }
         }
 
-        integer_caculate_unit(&decoder, fetch_data, &pc, &register_file);
+        integer_caculate_unit(&decoder, fetched_immediate_number, &pc, &register_file);
     }
 }

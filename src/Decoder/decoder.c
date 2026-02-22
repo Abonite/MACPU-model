@@ -32,7 +32,7 @@ struct Decoder new_decoder() {
     #define P_CODE_BITM     0b1111
 
     struct CheckResult decoder_meth_decode_impl(struct Decoder *self, unsigned char *source_code) {
-        unsigned int code;
+        unsigned int code = 0;
         for (int i = 0; i < 4; i++) {
             code = code | (source_code[i] << (i * 8));
         }

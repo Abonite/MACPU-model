@@ -22,9 +22,11 @@ unsigned char* storage_meth_read_impl(struct Storage *self, unsigned int address
     unsigned int d = 0;
     for (unsigned long long int i = (unsigned long long int)address; i < (unsigned long long int)address + 4; i++) {
         if ((i >= self->ram_start_addr) && (i <= self->ram_end_addr)) {
-            value[d] = self->ram.data[i - self->ram_start_addr];
+            unsigned long long int t = i - self->ram_start_addr;
+            value[d] = self->ram.data[t];
         } else if ((i >= self->rom_start_addr) && (i <= self->rom_end_addr)) {
-            value[d] = self->rom.data[i - self->rom_start_addr];
+            unsigned long long int t = i - self->rom_start_addr;
+            value[d] = self->rom.data[t];
         } else {
             value[d] = self->undefine_value;
         }
