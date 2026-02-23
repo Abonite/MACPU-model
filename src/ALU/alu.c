@@ -12,8 +12,13 @@ int integer_caculate_unit (
     struct ProgramCounter *pc,
     struct RegisterFile *rf
 ) {
-    unsigned int inner_immediate_number = (((unsigned int)decoder->reg_source_0) << 10) | (((unsigned int)decoder->reg_source_1) << 4) | (unsigned int)decoder->p;
+    unsigned int short_inner_immediate_number = (((unsigned int)decoder->reg_source_1) << 4) | (unsigned int)decoder->p;
+    unsigned int inner_immediate_number = (((unsigned int)decoder->reg_source_0) << 10) | short_inner_immediate_number;
     unsigned int long_inner_immediate_number = (((unsigned int)decoder->reg_target) << 16) | inner_immediate_number;
+    for (int i = 1; i <= 16; i ++) {
+        short_inner_immediate_number = short_inner_immediate_number | (short_inner_immediate_number & 0b1000000000) << i;
+    }
+
     for (int i = 1; i <= 16; i ++) {
         inner_immediate_number = inner_immediate_number | (inner_immediate_number & 0b1000000000000000) << i;
     }
@@ -43,12 +48,43 @@ int integer_caculate_unit (
             rf->write(rf, decoder->reg_target, fetched_immediate);
             break;
         }
+        case MOVE: {
+            if (decoder->reg_source_0 == 0b101001) {
+                unsigned int t = pc->current_value;
+                rf->write(rf, decoder->reg_target, t);
+            } else {
+                unsigned int *t = rf->read(rf, decoder->reg_source_0, 0);
+                rf->write(rf, decoder->reg_target, t[0]);
+            }
+            break;
+        }
+        case ADD_IMME: {
+            unsigned int *t = rf->read(rf, decoder->reg_source_0, 0);
+            rf->write(rf, decoder->reg_target, t[0] + short_inner_immediate_number);
+            break;
+        }
+        case ADD_REG: {
+            unsigned int *t = rf->read(rf, decoder->reg_source_0, decoder->reg_source_1);
+            rf->write(rf, decoder->reg_target, t[0] + t[1]);
+            break;
+        }
+        case SUB_IMME_RI: {
+            unsigned int *t = rf->read(rf, decoder->reg_source_0, 0);
+            rf->write(rf, decoder->reg_target, t[0] - short_inner_immediate_number);
+            break;
+        }
+        case SUB_REG: {
+            unsigned int *t = rf->read(rf, decoder->reg_source_0, decoder->reg_source_1);
+            rf->write(rf, decoder->reg_target, t[0] - t[1]);
+            break;
+        }
         case JMP_IMME: {
             pc->current_value = long_inner_immediate_number;
             break;
         }
         case JMP_REG: {
-            pc->current_value = fetched_immediate;
+            unsigned int *t = rf->read(rf, decoder->reg_source_0, 0);
+            pc->current_value = t[0];
             break;
         }
         default:

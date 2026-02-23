@@ -40,7 +40,7 @@ struct Decoder new_decoder() {
         self->op_code = 0;
         self->op_code = (code & (OP_CODE_BITM << OP_CODE_LBIT)) >> OP_CODE_LBIT;
         self->reg_target = (code & (REG_CODE_BITM << REGT_CODE_LBIT)) >> REGT_CODE_LBIT;
-        self->reg_source_0 = (code & (P_CODE_BITM << REGS0_CODE_LBIT)) >> REGS0_CODE_LBIT;
+        self->reg_source_0 = (code & (REG_CODE_BITM << REGS0_CODE_LBIT)) >> REGS0_CODE_LBIT;
         self->reg_source_1 = (code & (REG_CODE_BITM << REGS1_CODE_LBIT)) >> REGS1_CODE_LBIT;
         self->p = code & P_CODE_BITM;
 
@@ -256,24 +256,6 @@ struct Decoder new_decoder() {
             }
             // SUB immediate (reg - imme)
             case SUB_IMME_RI: {
-                self->code_type = OP_TSI;
-
-                unsigned char invld_a_val[] = {PC, ZERO};
-                struct Checker checker = {
-                    2,
-                    &invld_a_val,
-                    0,
-                    NULL,
-                    0,
-                    NULL,
-                    S0S1_NO_CONST
-                };
-
-                struct CheckResult check_result = self->check(self, checker);
-                return check_result;
-            }
-            // SUB immediate (imme - reg)
-            case SUB_IMME_IR: {
                 self->code_type = OP_TSI;
 
                 unsigned char invld_a_val[] = {PC, ZERO};

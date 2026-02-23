@@ -17,8 +17,7 @@
         #define ADD_IMME    0b1000000000
         #define ADD_REG     0b1000000001
         #define SUB_IMME_RI 0b1000000010
-        #define SUB_IMME_IR 0b1000000011
-        #define SUB_REG     0b1000000100
+        #define SUB_REG     0b1000000011
 
         #define JMP_IMME    0b1100000000
         #define JMP_REG     0b1100000001

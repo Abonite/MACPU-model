@@ -29,10 +29,6 @@ struct DataFetcher new_datafetcher(struct Decoder *decoder, struct RegisterFile 
             result.data_need_fetch = 1;
             break;
         }
-        case JMP_REG: {
-            result.data_need_fetch = 1;
-            break;
-        }
         default:
             break;
     }
