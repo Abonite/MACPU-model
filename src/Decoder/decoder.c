@@ -302,7 +302,7 @@ struct Decoder new_decoder() {
                     &invld_a_val,
                     0,
                     NULL,
-                    9,
+                    0,
                     NULL,
                     S0S1_NO_CONST
                 };
@@ -320,7 +320,7 @@ struct Decoder new_decoder() {
                     &invld_a_val,
                     0,
                     NULL,
-                    9,
+                    0,
                     NULL,
                     S0S1_NO_CONST
                 };
@@ -461,6 +461,7 @@ struct Decoder new_decoder() {
                         return check_result;
                     }
                 }
+                break;
             }
             case OP_I: {
                 check_result.check_pass = 1;
@@ -483,6 +484,7 @@ struct Decoder new_decoder() {
                         return check_result;
                     }
                 }
+                break;
             }
             case OP_TSI: {
                 for (int i_t_c = 0; i_t_c < checker.target_invld_num; i_t_c++) {
@@ -500,6 +502,7 @@ struct Decoder new_decoder() {
                         return check_result;
                     }
                 }
+                break;
             }
             case OP_TSS: {
                 for (int i_t_c = 0; i_t_c < checker.target_invld_num; i_t_c++) {
@@ -537,6 +540,7 @@ struct Decoder new_decoder() {
                         return check_result;
                         break;
                 }
+                break;
             }
         }
 
