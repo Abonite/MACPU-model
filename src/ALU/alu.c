@@ -78,13 +78,59 @@ int integer_caculate_unit (
             rf->write(rf, decoder->reg_target, t[0] - t[1]);
             break;
         }
+        case EQ_IMME: {
+            unsigned int *t = rf->read(rf, decoder->reg_source_0, 0);
+            if (t[0] == short_inner_immediate_number) {
+                rf->write(rf, decoder->reg_target, 1);
+            } else {
+                rf->write(rf, decoder->reg_target, 0);
+            }
+            break;
+        }
+        case EQ_REG: {
+            unsigned int *t = rf->read(rf, decoder->reg_source_0, decoder->reg_source_1);
+            if (t[0] == t[1]) {
+                rf->write(rf, decoder->reg_target, 1);
+            } else {
+                rf->write(rf, decoder->reg_target, 0);
+            }
+            break;
+        }
         case JMP_IMME: {
             pc->current_value = long_inner_immediate_number;
             break;
         }
         case JMP_REG: {
-            unsigned int *t = rf->read(rf, decoder->reg_source_0, 0);
+            unsigned int *t = rf->read(rf, decoder->reg_target, 0);
             pc->current_value = t[0];
+            break;
+        }
+        case OJMP_IMME: {
+            unsigned int *t = rf->read(rf, decoder->reg_target, 0);
+            if (t[0]) {
+                pc->current_value = inner_immediate_number;
+            }
+            break;
+        }
+        case OJMP_REG: {
+            unsigned int *t = rf->read(rf, decoder->reg_target, decoder->reg_source_0);
+            if (t[0]) {
+                pc->current_value = t[1];
+            }
+            break;
+        }
+        case ZJMP_IMME: {
+            unsigned int *t = rf->read(rf, decoder->reg_target, 0);
+            if (!t[0]) {
+                pc->current_value = inner_immediate_number;
+            }
+            break;
+        }
+        case ZJMP_REG: {
+            unsigned int *t = rf->read(rf, decoder->reg_target, decoder->reg_source_0);
+            if (!t[0]) {
+                pc->current_value = t[1];
+            }
             break;
         }
         default:

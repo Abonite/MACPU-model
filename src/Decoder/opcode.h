@@ -19,7 +19,14 @@
         #define SUB_IMME_RI 0b1000000010
         #define SUB_REG     0b1000000011
 
+        #define EQ_IMME     0b1001000010
+        #define EQ_REG      0b1001000011
+
         #define JMP_IMME    0b1100000000
         #define JMP_REG     0b1100000001
+        #define OJMP_IMME   0b1100000010
+        #define OJMP_REG    0b1100000011
+        #define ZJMP_IMME   0b1100000100
+        #define ZJMP_REG    0b1100000101
     #endif
 #endif

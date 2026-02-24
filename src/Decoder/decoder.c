@@ -290,6 +290,46 @@ struct Decoder new_decoder() {
                 struct CheckResult check_result = self->check(self, checker);
                 return check_result;
             }
+
+
+            //EQ Immediate
+            case EQ_IMME: {
+                self->code_type = OP_TSI;
+
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    NULL,
+                    9,
+                    NULL,
+                    S0S1_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+            }
+            //EQ register
+            case EQ_REG: {
+                self->code_type = OP_TSS;
+
+                unsigned char invld_a_val[] = {PC, ZERO};
+                struct Checker checker = {
+                    2,
+                    &invld_a_val,
+                    0,
+                    NULL,
+                    9,
+                    NULL,
+                    S0S1_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+            }
+
+
             // JMP Immediate
             case JMP_IMME: {
                 self->code_type = OP_I;
@@ -310,6 +350,74 @@ struct Decoder new_decoder() {
             // JMP register
             case JMP_REG: {
                 self->code_type = OP_SS;
+
+                struct Checker checker = {
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    S0S1_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+            }
+            // OJMP Immediate
+            case OJMP_IMME: {
+                self->code_type = OP_TI;
+
+                struct Checker checker = {
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    S0S1_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+            }
+            // OJMP register
+            case OJMP_REG: {
+                self->code_type = OP_TS;
+
+                struct Checker checker = {
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    S0S1_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+            }
+            // ZJMP Immediate
+            case ZJMP_IMME: {
+                self->code_type = OP_TI;
+
+                struct Checker checker = {
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    0,
+                    NULL,
+                    S0S1_NO_CONST
+                };
+
+                struct CheckResult check_result = self->check(self, checker);
+                return check_result;
+            }
+            // ZJMP register
+            case ZJMP_REG: {
+                self->code_type = OP_TS;
 
                 struct Checker checker = {
                     0,
