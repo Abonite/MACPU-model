@@ -107,29 +107,29 @@ int integer_caculate_unit (
         }
         case OJMP_IMME: {
             unsigned int *t = rf->read(rf, decoder->reg_target, 0);
-            if (t[1]) {
+            if (t[0]) {
                 pc->current_value = inner_immediate_number;
             }
             break;
         }
         case OJMP_REG: {
             unsigned int *t = rf->read(rf, decoder->reg_target, decoder->reg_source_0);
-            if (t[1]) {
-                pc->current_value = t[0];
+            if (t[0]) {
+                pc->current_value = t[1];
             }
             break;
         }
         case ZJMP_IMME: {
             unsigned int *t = rf->read(rf, decoder->reg_target, 0);
-            if (!t[1]) {
+            if (!t[0]) {
                 pc->current_value = inner_immediate_number;
             }
             break;
         }
         case ZJMP_REG: {
             unsigned int *t = rf->read(rf, decoder->reg_target, decoder->reg_source_0);
-            if (!t[1]) {
-                pc->current_value = t[0];
+            if (!t[0]) {
+                pc->current_value = t[1];
             }
             break;
         }

@@ -1,6 +1,9 @@
 #ifndef __DEFINE_REGISTER__
     #define __DEFINE_REGISTER__
 
+    #define PC      0b101001
+    #define ZERO    0b000000
+
     #define A0  1
     #define A1  2
     #define A2  3

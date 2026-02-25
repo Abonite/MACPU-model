@@ -456,8 +456,7 @@ struct Decoder new_decoder() {
                 for (int i_a_c = 0; i_a_c < checker.target_invld_num; i_a_c++) {
                     if (self->reg_target == checker.target_invld_val[i_a_c]) {
                         // Error: invalid reg A
-                        char error_msg[] = "Invalid reg A.\0";
-                        check_result.error_msg = &error_msg;
+                        check_result.err_type = INVALID_OPREG_A;
                         return check_result;
                     }
                 }
@@ -471,16 +470,14 @@ struct Decoder new_decoder() {
             case OP_TS: {
                 for (int i_t_c = 0; i_t_c < checker.target_invld_num; i_t_c++) {
                     if (self->reg_target == checker.target_invld_val[i_t_c]) {
-                        char error_msg[] = "Invalid target register.\0";
-                        check_result.error_msg = &error_msg;
+                        check_result.err_type = INVALID_OPREG_A;
                         return check_result;
                     }
                 }
 
                 for (int i_s0_c = 0; i_s0_c < checker.source_0_invld_num; i_s0_c++) {
                     if (self->reg_source_0 == checker.source_0_invld_val[i_s0_c]) {
-                        char error_msg[] = "Invalid source 0 register.\0";
-                        check_result.error_msg = &error_msg;
+                        check_result.err_type = INVALID_OPREG_B;
                         return check_result;
                     }
                 }
@@ -489,16 +486,14 @@ struct Decoder new_decoder() {
             case OP_TSI: {
                 for (int i_t_c = 0; i_t_c < checker.target_invld_num; i_t_c++) {
                     if (self->reg_target == checker.target_invld_val[i_t_c]) {
-                        char error_msg[] = "Invalid target register.\0";
-                        check_result.error_msg = &error_msg;
+                        check_result.err_type = INVALID_OPREG_A;
                         return check_result;
                     }
                 }
 
                 for (int i_s0_c = 0; i_s0_c < checker.source_0_invld_num; i_s0_c++) {
                     if (self->reg_source_0 == checker.source_0_invld_val[i_s0_c]) {
-                        char error_msg[] = "Invalid source 0 register.\0";
-                        check_result.error_msg = &error_msg;
+                        check_result.err_type = INVALID_OPREG_B;
                         return check_result;
                     }
                 }
@@ -507,24 +502,21 @@ struct Decoder new_decoder() {
             case OP_TSS: {
                 for (int i_t_c = 0; i_t_c < checker.target_invld_num; i_t_c++) {
                     if (self->reg_target == checker.target_invld_val[i_t_c]) {
-                        char error_msg[] = "Invalid target register.\0";
-                        check_result.error_msg = &error_msg;
+                        check_result.err_type = INVALID_OPREG_A;
                         return check_result;
                     }
                 }
 
                 for (int i_s0_c = 0; i_s0_c < checker.source_0_invld_num; i_s0_c++) {
                     if (self->reg_source_0 == checker.source_0_invld_val[i_s0_c]) {
-                        char error_msg[] = "Invalid source 0 register.\0";
-                        check_result.error_msg = &error_msg;
+                        check_result.err_type = INVALID_OPREG_B;
                         return check_result;
                     }
                 }
 
                 for (int i_s1_c = 0; i_s1_c < checker.source_1_invld_num; i_s1_c++) {
                     if (self->reg_source_1 == checker.source_1_invld_val[i_s1_c]) {
-                        char error_msg[] = "Invalid source 1 register.\0";
-                        check_result.error_msg = &error_msg;
+                        check_result.err_type = INVALID_OPREG_C;
                         return check_result;
                     }
                 }
@@ -533,10 +525,8 @@ struct Decoder new_decoder() {
                     case S0S1_NO_CONST:
                         break;            
                     default:
-                        // Error: invalid check const
-                        char error_msg[] = "Invalid check const.\0";
                         check_result.is_fatal = 0;
-                        check_result.error_msg = &error_msg;
+                        check_result.err_type = BC_SAME;
                         return check_result;
                         break;
                 }

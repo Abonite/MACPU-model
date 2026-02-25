@@ -2,10 +2,15 @@
     #define __DECODER__
 
     #ifdef __32bit__
-        #define PC      0b101001
-        #define ZERO    0b000000
 
         #define S0S1_NO_CONST   0
+
+        #define UNKNOW_CODE         0
+        #define INVALID_OPREG_A     1
+        #define INVALID_OPREG_B     2
+        #define INVALID_OPREG_C     3
+
+        #define BC_SAME             10
 
         struct Checker {
             int target_invld_num;
@@ -21,7 +26,7 @@
         struct CheckResult {
             int check_pass;
             int is_fatal;
-            char *error_msg;
+            int err_type;
         };
 
         #define OP_TI  0

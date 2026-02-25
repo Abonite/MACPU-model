@@ -35,11 +35,17 @@ int main(int argc, char *argv[]) {
         if (result.check_pass) {
             data_fetcher = new_datafetcher(&decoder, &register_file);
         } else if (result.is_fatal) {
-            printf("%s", result.error_msg);
-            break;
+            printf("[FATAL]: code: %s;\n", result.err_type);
+            register_file.write(&register_file, 4, result.err_type);
+            decoder.reg_target = 0b111111;
+            decoder.reg_source_0 = 0b111111;
+            decoder.reg_source_1 = 0b111111;
+            decoder.p = 0b1000;
+            decoder.op_code = 0b1100000000; // JMP [0xFFFFFFF8]
+            data_fetcher = new_datafetcher(&decoder, &register_file);
         } else {
-            printf("%s", result.error_msg);
-            return 0;
+            printf("[ERROR]: code: %s;\n", result.err_type);
+            break;
         }
 
         unsigned int fetched_immediate_number = 0;
