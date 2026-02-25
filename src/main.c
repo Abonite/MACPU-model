@@ -13,7 +13,7 @@
 #include "storage.h"
 
 int main(int argc, char *argv[]) {
-    char *init_file_path = "H:\\Code\\MACPU-model\\docs\\test.bo";
+    char *init_file_path = "C:\\Users\\Habus\\Documents\\Code\\C\\MACPU-model\\docs\\test.bo";
 
     struct Rom rom = new_rom(init_file_path, 0x00, 65536);
     struct Ram ram = new_ram(8192, 0x00);
@@ -30,7 +30,17 @@ int main(int argc, char *argv[]) {
         char *data = storage.read(&storage, pc.current_value);
         pc.operate(&pc, 4);
         struct CheckResult result = decoder.decode(&decoder, data);
-        struct DataFetcher data_fetcher = new_datafetcher(&decoder, &register_file);
+
+        struct DataFetcher data_fetcher;
+        if (result.check_pass) {
+            data_fetcher = new_datafetcher(&decoder, &register_file);
+        } else if (result.is_fatal) {
+            printf("%s", result.error_msg);
+            break;
+        } else {
+            printf("%s", result.error_msg);
+            return 0;
+        }
 
         unsigned int fetched_immediate_number = 0;
         if (data_fetcher.data_need_fetch) {
@@ -42,4 +52,7 @@ int main(int argc, char *argv[]) {
 
         integer_caculate_unit(&decoder, fetched_immediate_number, &pc, &register_file);
     }
+
+    printf("Due to the early error, cpu stop.");
+    return 1;
 }
