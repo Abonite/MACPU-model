@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
         if (result.check_pass) {
             data_fetcher = new_datafetcher(&decoder, &register_file);
         } else if (result.is_fatal) {
-            printf("[FATAL]: code: %s;\n", result.err_type);
+            printf("[FATAL]: code: %d;\n", result.err_type);
             register_file.write(&register_file, 4, result.err_type);
             decoder.reg_target = 0b111111;
             decoder.reg_source_0 = 0b111111;
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
             decoder.op_code = 0b1100000000; // JMP [0xFFFFFFF8]
             data_fetcher = new_datafetcher(&decoder, &register_file);
         } else {
-            printf("[ERROR]: code: %s;\n", result.err_type);
+            printf("[ERROR]: code: %d;\n", result.err_type);
             break;
         }
 

@@ -433,11 +433,10 @@ struct Decoder new_decoder() {
                 return check_result;
             }
             default: {
-                char error_msg[] = "Unknown instruction.\0";
                 struct CheckResult check_result = {
                     0,
                     1,
-                    &error_msg
+                    UNKNOW_CODE
                 };
                 return check_result;
             }
