@@ -50,10 +50,12 @@
 
         int (*write)(struct RegisterFile *self, unsigned char register, unsigned int data);
         unsigned int* (*read)(struct RegisterFile *self, unsigned char register_0, unsigned char register_1);
+        int (*print)(struct Registerfile *self);
     };
 
     struct RegisterFile new_registerfile();
 
-    int meth_write_impl(struct RegisterFile *self, unsigned char register, unsigned int data);
-    unsigned int* meth_read_impl(struct RegisterFile *self, unsigned char register_0, unsigned char register_1);
+    int registerfile_meth_write_impl(struct RegisterFile *self, unsigned char register, unsigned int data);
+    unsigned int* registerfile_meth_read_impl(struct RegisterFile *self, unsigned char register_0, unsigned char register_1);
+    int registerfile_meth_print_impl();
 #endif

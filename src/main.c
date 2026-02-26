@@ -33,7 +33,9 @@ int main(int argc, char *argv[]) {
         pc.operate(&pc, 4);
         struct CheckResult result = decoder.decode(&decoder, data);
 
-        interrupt(result, &decoder, &register_file);
+        if (interrupt(result, &decoder, &register_file) == -1) {
+            break;
+        }
         struct DataFetcher data_fetcher = new_datafetcher(&decoder, &register_file);
 
         unsigned int fetched_immediate_number = 0;
