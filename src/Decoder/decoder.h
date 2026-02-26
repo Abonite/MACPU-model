@@ -5,13 +5,6 @@
 
         #define S0S1_NO_CONST   0
 
-        #define UNKNOW_CODE         0
-        #define INVALID_OPREG_A     1
-        #define INVALID_OPREG_B     2
-        #define INVALID_OPREG_C     3
-
-        #define BC_SAME             10
-
         struct Checker {
             int target_invld_num;
             unsigned char *target_invld_val;

@@ -2,6 +2,7 @@
 
 #define __32bit__
 
+#include "interrupt.h"
 #include "decoder.h"
 #include "opcode.h"
 #include "../ALU/register.h"
@@ -34,8 +35,10 @@ struct Decoder new_decoder() {
     struct CheckResult decoder_meth_decode_impl(struct Decoder *self, unsigned char *source_code) {
         unsigned int code = 0;
         for (int i = 0; i < 4; i++) {
-            code = code | (source_code[i] << (i * 8));
+            unsigned char byte = source_code[i];
+            code = code | (byte << (i * 8));
         }
+        free(source_code);
 
         self->op_code = 0;
         self->op_code = (code & (OP_CODE_BITM << OP_CODE_LBIT)) >> OP_CODE_LBIT;

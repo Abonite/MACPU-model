@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "storage.h"
 
 struct Storage new_storage(unsigned int ram_start_addr, struct Ram ram, unsigned int rom_start_addr, struct Rom rom, unsigned char undefine_value) {
@@ -17,7 +18,8 @@ struct Storage new_storage(unsigned int ram_start_addr, struct Ram ram, unsigned
 };
 
 unsigned char* storage_meth_read_impl(struct Storage *self, unsigned int address) {
-    unsigned char value[4] = {0, 0, 0, 0};
+    unsigned char *value = (unsigned char*)malloc(4);
+    if (!value) return NULL;
 
     unsigned int d = 0;
     for (unsigned long long int i = (unsigned long long int)address; i < (unsigned long long int)address + 4; i++) {
